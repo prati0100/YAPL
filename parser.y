@@ -1,5 +1,7 @@
 %{
-
+	#include <stdio.h>
+	void yyerror(const char *);
+	int yylex();
 %}
 
 %token TK_EOF 0
@@ -43,6 +45,31 @@
 %token TK_NEWLINE;
 %token TK_BADCHAR;
 
-%%
+%left '-' '+'
+%left '*' '/'
 
 %%
+input:
+	  %empty
+	| input line
+	;
+
+line:
+	  '\n'
+	| exp '\n' {printf("exp = %d\n", $1);}
+	;
+
+exp:
+	  TK_NUMBER
+	| exp '+' exp { $$ = $1 + $3; }
+	| exp '-' exp { $$ = $1 - $3; }
+	| exp '*' exp { $$ = $1 * $3; }
+	| exp '/' exp { $$ = $1 / $3; }
+	;
+%%
+
+void
+yyerror(const char *msg)
+{
+	printf("%s\n", msg);
+}
