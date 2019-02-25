@@ -15,7 +15,7 @@ default: debug
 clean:
 	@echo Cleaning...
 	rm -f $(OBJDIR)/*.o
-	rm -f $(BINDIR)/*
+	rm -f $(BINDIR)/luac
 	rm -f lex.yy.c
 	rm -f parser.tab.c
 	rm -f parser.tab.h
