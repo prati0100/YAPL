@@ -13,12 +13,12 @@ NUMBER {DIGIT}+
 
 {NUMBER} {yylval = atoi(yytext); return TK_NUMBER;}
 
-"+" |
-"-" |
-"*" |
-"/" {return yytext[0];}
+"+" { return TK_PLUS; }
+"-" { return TK_MINUS; }
+"*" { return TK_MUL; }
+"/" { return TK_DIV; }
 
-"\n" {return '\n';}
+"\n" { return TK_NEWLINE; }
 
 [ \t]+ {}
 %%

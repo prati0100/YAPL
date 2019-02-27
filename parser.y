@@ -30,6 +30,10 @@
 
 %token TK_CONCAT
 %token TK_DOTS
+%token TK_PLUS
+%token TK_MINUS
+%token TK_MUL
+%token TK_DIV
 %token TK_EQ
 %token TK_GE
 %token TK_LE
@@ -45,8 +49,8 @@
 %token TK_NEWLINE;
 %token TK_BADCHAR;
 
-%left '-' '+'
-%left '*' '/'
+%left TK_MINUS TK_PLUS
+%left TK_MUL TK_DIV
 
 %%
 input:
@@ -55,16 +59,16 @@ input:
 	;
 
 line:
-	  '\n'
-	| exp '\n' {printf("exp = %d\n", $1);}
+	  TK_NEWLINE
+	| exp TK_NEWLINE { printf("exp = %d\n", $1); }
 	;
 
 exp:
 	  TK_NUMBER
-	| exp '+' exp { $$ = $1 + $3; }
-	| exp '-' exp { $$ = $1 - $3; }
-	| exp '*' exp { $$ = $1 * $3; }
-	| exp '/' exp { $$ = $1 / $3; }
+	| exp TK_PLUS exp { $$ = $1 + $3; }
+	| exp TK_MINUS exp { $$ = $1 - $3; }
+	| exp TK_MUL exp { $$ = $1 * $3; }
+	| exp TK_DIV exp { $$ = $1 / $3; }
 	;
 %%
 
