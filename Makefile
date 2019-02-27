@@ -6,7 +6,9 @@ DEPS = *.h
 OBJDIR = objs
 BINDIR = bin
 
-OBJS = $(OBJDIR)/luac.o $(OBJDIR)/lex.yy.o $(OBJDIR)/parser.tab.o
+CFILES = luac.c lex.yy.c parser.tab.c
+
+OBJS = $(patsubst %.c,$(OBJDIR)/%.o,$(CFILES))
 
 default: debug
 
