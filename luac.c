@@ -1,9 +1,13 @@
-#include <luac.h>
 #include <stdio.h>
 #include <errno.h>
 #include <err.h>
+#include <unistd.h>
+
+#include <luac.h>
 
 extern FILE *yyin;
+
+FILE *outfile;
 
 /* Bison declarations. */
 int yyparse();
@@ -12,11 +16,29 @@ int yyparse();
 int yylex();
 
 int
-main(int argc, char const *argv[]) {
-	if (argc != 2) {
-		printf("Expected 2 arguments, got %d\n", argc);
+main(int argc, char *argv[]) {
+	char *outfilename, *infilename;
+	int opt;
+
+	outfilename = infilename = NULL;
+
+	while ((opt = getopt(argc, argv, "o:")) != -1) {
+		switch (opt) {
+		case 'o':
+			outfilename = optarg;
+			break;
+		default:
+			printf("Couldn't recognize option -%c\n", opt);
+			break;
+		}
+	}
+
+	if (optind == argc) {
+		printf("No input file specified\n");
 		return 1;
 	}
+
+	infilename = argv[optind];
 
 	/*
 	 * For now, I am only working with one source file. I don't know how I
@@ -24,9 +46,19 @@ main(int argc, char const *argv[]) {
 	 * multiple files, so ignoring that problem for now.
 	 */
 
-	yyin = fopen(argv[1], "r");
+	yyin = fopen(infilename, "r");
 	if (yyin == NULL) {
 		perror("Failed to open source file");
+		return 1;
+	}
+
+	if (outfilename == NULL) {
+		outfilename = "a.out";
+	}
+
+	outfile = fopen(outfilename, "w+");
+	if (outfile == NULL) {
+		perror("Failed to open output file");
 		return 1;
 	}
 
