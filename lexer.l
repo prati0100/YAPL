@@ -4,6 +4,12 @@
 	#include <stdio.h>
 
 	#include "parser.tab.h"
+
+	/*
+	 * yyunput() and input() are in the generated file but are unused. Disable
+	 * the compiler warnings for them.
+	 */
+	#pragma GCC diagnostic ignored "-Wunused-function"
 %}
 
 DIGIT [0-9]
