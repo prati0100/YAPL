@@ -1,6 +1,8 @@
 #ifndef __LUAC_H__
 #define __LUAC_H__
 
+#include "parser.tab.h"
+
 #ifdef LUAC_DEBUG
 #define ASSERT(cond, fmt, args...)	do {									\
 	if (!(cond)) {															\
