@@ -13,8 +13,8 @@
 #define ST_SIZE 30
 
 struct st_entry **symbol_table = NULL;
-static int endidx = 0;
-static int cursz = 0;
+int st_endidx = 0;
+int st_cursz = 0;
 
 struct st_entry *
 st_entry_create(char *text, int tk_type)
@@ -39,17 +39,17 @@ st_grow()
 	int i;
 
 	symbol_table = realloc(symbol_table, sizeof(*symbol_table) *
-		(cursz + ST_SIZE));
+		(st_cursz + ST_SIZE));
 	if (errno) {
 		printf("Failed to grow the symbol table: %s\n", strerror(errno));
 		return errno;
 	}
 
-	for (i = cursz; i < cursz + ST_SIZE; i++) {
+	for (i = st_cursz; i < st_cursz + ST_SIZE; i++) {
 		symbol_table[i] = NULL;
 	}
 
-	cursz += ST_SIZE;
+	st_cursz += ST_SIZE;
 
 	return 0;
 }
@@ -67,16 +67,16 @@ st_insert(char *text, int tk_type)
 {
 	int error;
 
-	if (endidx == cursz) {
+	if (st_endidx == st_cursz) {
 		error = st_grow();
 
 		/* XXX Maybe do something useful with the return code? */
 		ASSERT(error == 0, "Can't grow the symbol table");
 	}
 
-	symbol_table[endidx++] = st_entry_create(text, tk_type);
+	symbol_table[st_endidx++] = st_entry_create(text, tk_type);
 
-	return endidx - 1;
+	return st_endidx - 1;
 }
 
 int
@@ -84,7 +84,7 @@ st_get(char *text)
 {
 	int i;
 
-	for (i = 0; i < endidx; i++) {
+	for (i = 0; i < st_endidx; i++) {
 		if (strcmp(text, symbol_table[i]->text) == 0) {
 			return i;
 		}
@@ -100,7 +100,7 @@ st_display()
 
 	printf("Text\tType\n");
 
-	for (i = 0; i < endidx; i++) {
+	for (i = 0; i < st_endidx; i++) {
 		printf("%s\t%d\n",
 			symbol_table[i]->text,
 			symbol_table[i]->tk_type);
