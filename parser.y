@@ -1,5 +1,9 @@
 %{
 	#include <stdio.h>
+
+	#include <luac.h>
+	#include <symbol_table.h>
+
 	void yyerror(const char *);
 	int yylex();
 %}
@@ -38,6 +42,7 @@
 %token TK_GE
 %token TK_LE
 %token TK_NE
+%token TK_ASSIGN
 %token TK_NUMBER
 %token TK_NAME
 %token TK_STRING
@@ -61,10 +66,17 @@ input:
 line:
 	  TK_NEWLINE
 	| exp TK_NEWLINE { printf("exp = %d\n", $1); }
+	| assign TK_NEWLINE
+	;
+
+assign:
+	  TK_NAME TK_ASSIGN TK_NUMBER { symbol_table[$1]->value = $3; }
+	| TK_NAME TK_ASSIGN exp { symbol_table[$1]->value = $3; }
 	;
 
 exp:
-	  TK_NUMBER
+	  TK_NUMBER { $$ = $1; }
+	| TK_NAME { $$ = symbol_table[$1]->value; }
 	| exp TK_PLUS exp { $$ = $1 + $3; }
 	| exp TK_MINUS exp { $$ = $1 - $3; }
 	| exp TK_MUL exp { $$ = $1 * $3; }

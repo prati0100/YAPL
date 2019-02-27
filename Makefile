@@ -6,7 +6,7 @@ DEPS = *.h
 OBJDIR = objs
 BINDIR = bin
 
-CFILES = luac.c lex.yy.c parser.tab.c
+CFILES = luac.c lex.yy.c parser.tab.c symbol_table.c
 
 OBJS = $(patsubst %.c,$(OBJDIR)/%.o,$(CFILES))
 
