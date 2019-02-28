@@ -9,6 +9,7 @@ int gen_exp_num(int number);
 int gen_exp_name(int stent);
 int gen_assign_exp(int stent);
 int gen_exp_val(void);
+int gen_exit(void);
 
 #ifdef LUAC_DEBUG
 void print_gen_data_sect(void);

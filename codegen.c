@@ -97,6 +97,11 @@ char *assign_exp =
  */
 char *exp_val = "pop rax\n";
 
+char *exit_asm =
+	"mov rax, 60\n"
+	"mov rdi, 0\n"
+	"syscall\n";
+
 /* ---------------------------------------------------------------------- */
 
 /* Generated code buffers. These will be sent to the assembler. */
@@ -290,6 +295,14 @@ gen_exp_val()
 {
 	/* TODO: Possibility of a buffer overflow. */
 	strcat(gen_text_sect, exp_val);
+
+	return 0;
+}
+
+int
+gen_exit()
+{
+	strcat(gen_text_sect, exit_asm);
 
 	return 0;
 }
