@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include <luac.h>
+#include <codegen.h>
 
 extern FILE *yyin;
 
@@ -61,6 +62,9 @@ main(int argc, char *argv[]) {
 		perror("Failed to open output file");
 		return 1;
 	}
+
+	init_text_sect();
+	init_data_sect();
 
 	yyparse();
 

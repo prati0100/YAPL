@@ -4,6 +4,7 @@
 
 	#include <luac.h>
 	#include <symbol_table.h>
+	#include <codegen.h>
 
 	/*
 	 * yyunput() and input() are in the generated file but are unused. Disable
@@ -24,6 +25,8 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 	yylval = st_get(yytext);
 	if (yylval == -1) {
 		yylval = st_insert(yytext, TK_NAME);
+		/* XXX Hacky? */
+		add_to_data_sect(yytext, "0", DWORD);
 	}
 
 	return TK_NAME;
