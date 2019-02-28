@@ -11,6 +11,10 @@ int gen_assign_exp(int stent);
 int gen_exp_val(void);
 int gen_exit(void);
 
+char *get_gen_data(void);
+char *get_gen_text(void);
+char *get_gen_header(void);
+
 #ifdef LUAC_DEBUG
 void print_gen_data_sect(void);
 void print_gen_text_sect(void);

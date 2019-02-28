@@ -314,3 +314,21 @@ print_gen_text_sect()
 	printf("%s", gen_text_sect);
 }
 #endif /* LUAC_DEBUG */
+
+char *
+get_gen_data()
+{
+	return gen_data_sect;
+}
+
+char *
+get_gen_text()
+{
+	return gen_text_sect;
+}
+
+char *
+get_gen_header()
+{
+	return header;
+}
