@@ -29,6 +29,7 @@ st_entry_create(char *text, int tk_type)
 	s->text = strdup(text);
 	s->tk_type = tk_type;
 	s->value = 0;
+	s->size = DWORD;
 
 	return s;
 }

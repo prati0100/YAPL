@@ -1,9 +1,12 @@
 #ifndef __SYMBOL_TABLE_H__
 #define __SYMBOL_TABLE_H__
 
+#include <luac.h>
+
 struct st_entry {
 	char *text;
 	int tk_type;
+	enum data_size size;
 	int value;
 };
 

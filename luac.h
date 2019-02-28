@@ -20,4 +20,11 @@
 #define DPRINTF(fmt, args...)
 #endif
 
+enum data_size {
+	BYTE,
+	WORD,
+	DWORD,
+	QWORD
+};
+
 #endif /* __LUAC_H__ */
