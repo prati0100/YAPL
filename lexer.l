@@ -19,12 +19,12 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 
 %%
 
-{NUMBER} {yylval = atoi(yytext); return TK_NUMBER;}
+{NUMBER} {yylval.intval = atoi(yytext); return TK_NUMBER;}
 
 {NAME} {
-	yylval = st_get(yytext);
-	if (yylval == -1) {
-		yylval = st_insert(yytext, TK_NAME);
+	yylval.intval = st_get(yytext);
+	if (yylval.intval == -1) {
+		yylval.intval = st_insert(yytext, TK_NAME);
 		/* XXX Hacky? */
 		add_to_data_sect(yytext, "0", DWORD);
 	}

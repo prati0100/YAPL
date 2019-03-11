@@ -9,6 +9,11 @@
 	int yylex();
 %}
 
+%union {
+	int intval;
+	char *strval;
+}
+
 %token TK_EOF 0
 
 %token TK_AND 257
@@ -72,13 +77,13 @@ line:
 
 assign:
 	TK_NAME TK_ASSIGN exp {
-		gen_assign_exp($1);
+		gen_assign_exp($<intval>1);
 	}
 	;
 
 exp:
-	  TK_NUMBER { gen_exp_num($1); }
-	| TK_NAME { gen_exp_name($1); }
+	  TK_NUMBER { gen_exp_num($<intval>1); }
+	| TK_NAME { gen_exp_name($<intval>1); }
 	| exp TK_PLUS exp { gen_exp_arith(TK_PLUS); }
 	| exp TK_MINUS exp { gen_exp_arith(TK_MINUS); }
 	| exp TK_MUL exp { gen_exp_arith(TK_MUL); }
