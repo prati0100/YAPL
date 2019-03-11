@@ -29,28 +29,24 @@
 
 %token TK_AND 257
 %token TK_BREAK
-%token TK_DO
+%token TK_START
 %token TK_ELSE
 %token TK_ELSEIF
 %token TK_END
 %token TK_FALSE
 %token TK_FOR
-%token TK_FUNCTION
+%token TK_FN
 %token TK_IF
 %token TK_IN
 %token TK_LOCAL
-%token TK_NIL
+%token TK_NULL
 %token TK_NOT
 %token TK_OR
-%token TK_REPEAT
 %token TK_RETURN
 %token TK_THEN
 %token TK_TRUE
-%token TK_UNTIL
 %token TK_WHILE
 
-%token TK_CONCAT
-%token TK_DOTS
 %token TK_PLUS
 %token TK_MINUS
 %token TK_MUL
