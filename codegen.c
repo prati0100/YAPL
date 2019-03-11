@@ -20,7 +20,7 @@
 #include <string.h>
 #include <errno.h>
 
-#include <luac.h>
+#include <yapl.h>
 #include <symbol_table.h>
 #include <codegen.h>
 
@@ -187,13 +187,13 @@ add_to_data_sect(char *name, char *value, enum data_size size)
 	return 0;
 }
 
-#ifdef LUAC_DEBUG
+#ifdef YAPL_DEBUG
 void
 print_gen_data_sect()
 {
 	printf("%s", gen_data_sect);
 }
-#endif /* LUAC_DEBUG */
+#endif /* YAPL_DEBUG */
 
 void
 init_text_sect()
@@ -307,13 +307,13 @@ gen_exit()
 	return 0;
 }
 
-#ifdef LUAC_DEBUG
+#ifdef YAPL_DEBUG
 void
 print_gen_text_sect()
 {
 	printf("%s", gen_text_sect);
 }
-#endif /* LUAC_DEBUG */
+#endif /* YAPL_DEBUG */
 
 char *
 get_gen_data()

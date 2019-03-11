@@ -1,6 +1,6 @@
-# Luac
+# YAPL
 
-A compiler for a lua-like language written for my compilers class. It does NOT compile lua. Rather, a language with the grammar inspired from lua.
+Yet Another Programming Language (YAPL) is a language with syntax inspired from Lua written for my compilers class. It does NOT compile Lua. Only the syntax is derived from Lua.
 
 The grammar is taken from the [Lua Manual](http://www.lua.org/manual/5.1/manual.html).
 

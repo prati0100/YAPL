@@ -1,7 +1,7 @@
 #ifndef __SYMBOL_TABLE_H__
 #define __SYMBOL_TABLE_H__
 
-#include <luac.h>
+#include <yapl.h>
 
 struct st_entry {
 	char *text;

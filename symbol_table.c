@@ -5,7 +5,7 @@
 #include <symbol_table.h>
 #include <errno.h>
 
-#include <luac.h>
+#include <yapl.h>
 
 /* TODO: Maybe use a hash table? */
 

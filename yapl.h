@@ -1,9 +1,9 @@
-#ifndef __LUAC_H__
-#define __LUAC_H__
+#ifndef __YAPL_H__
+#define __YAPL_H__
 
 #include "parser.tab.h"
 
-#ifdef LUAC_DEBUG
+#ifdef YAPL_DEBUG
 #define ASSERT(cond, fmt, args...)	do {									\
 	if (!(cond)) {															\
 		fprintf(stderr, "%s:%d -- " fmt "\n", __func__, __LINE__, ##args);	\
@@ -14,7 +14,7 @@
 #define ASSERT(cond, fmt, args...)
 #endif
 
-#ifdef LUAC_DEBUG
+#ifdef YAPL_DEBUG
 #define DPRINTF(fmt, args...) printf("%s: " fmt, __func__, ##args)
 #else
 #define DPRINTF(fmt, args...)
@@ -27,4 +27,4 @@ enum data_size {
 	QWORD
 };
 
-#endif /* __LUAC_H__ */
+#endif /* __YAPL_H__ */

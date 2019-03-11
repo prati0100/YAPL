@@ -5,18 +5,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <luac.h>
+#include <yapl.h>
 #include <codegen.h>
 
 extern FILE *yyin;
 
 FILE *outfile;
 
-#ifdef LUAC_DEBUG
+#ifdef YAPL_DEBUG
 char nasm_cmd[] = "nasm -f elf64 -F dwarf -g -o \"%s\" \"%s\"";
 #else
 char nasm_cmd[] = "bash -c nasm -f elf64 -o \"%s\" \"%s\"";
-#endif /* LUAC_DEBUG */
+#endif /* YAPL_DEBUG */
 
 char ld_cmd[] = "ld -dynamic-linker /lib64/ld-linux-x86-64.so.2 -lc -o \"%s\" \"%s\"";
 

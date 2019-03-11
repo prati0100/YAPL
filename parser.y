@@ -1,7 +1,7 @@
 %{
 	#include <stdio.h>
 
-	#include <luac.h>
+	#include <yapl.h>
 	#include <symbol_table.h>
 	#include <codegen.h>
 

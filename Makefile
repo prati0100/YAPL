@@ -1,12 +1,12 @@
 CC = gcc
 INCLUDES = -I .
 CFLAGS = -Wall -Wshadow
-DEBUGFLAGS = -D LUAC_DEBUG -g
+DEBUGFLAGS = -D YAPL_DEBUG -g
 DEPS = *.h
 OBJDIR = objs
 BINDIR = bin
 
-CFILES = luac.c lex.yy.c parser.tab.c symbol_table.c codegen.c
+CFILES = yapl.c lex.yy.c parser.tab.c symbol_table.c codegen.c
 
 OBJS = $(patsubst %.c,$(OBJDIR)/%.o,$(CFILES))
 
@@ -17,7 +17,7 @@ default: debug
 clean:
 	@echo Cleaning...
 	rm -f $(OBJDIR)/*.o
-	rm -f $(BINDIR)/luac
+	rm -f $(BINDIR)/yapl
 	rm -f lex.yy.c
 	rm -f parser.tab.c
 	rm -f parser.tab.h
@@ -29,7 +29,7 @@ release: clean all
 
 all: parser.tab.c lex.yy.c $(OBJS)
 	@mkdir -p ${BINDIR}
-	$(CC) -o $(BINDIR)/luac $(OBJS) $(CLFAGS) $(INCLUDES) $(LIBS)
+	$(CC) -o $(BINDIR)/yapl $(OBJS) $(CLFAGS) $(INCLUDES) $(LIBS)
 
 # Rule for the flex file
 lex.yy.c: lexer.l

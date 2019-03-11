@@ -15,7 +15,7 @@ char *get_gen_data(void);
 char *get_gen_text(void);
 char *get_gen_header(void);
 
-#ifdef LUAC_DEBUG
+#ifdef YAPL_DEBUG
 void print_gen_data_sect(void);
 void print_gen_text_sect(void);
 #endif
