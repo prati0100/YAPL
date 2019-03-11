@@ -137,8 +137,7 @@ main(int argc, char *argv[]) {
 			keep_obj = 1;
 			break;
 		default:
-			printf("Couldn't recognize option -%c\n", opt);
-			break;
+			return 1;
 		}
 	}
 
