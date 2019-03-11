@@ -73,10 +73,15 @@
 %%
 input:
 	  %empty
-	| input line
+	| input block
 	;
 
-line:
+block:
+	  %empty
+	| stat block
+	;
+
+stat:
 	  TK_NEWLINE
 	| exp TK_NEWLINE {
 		char *exp, *expval, *buf;
