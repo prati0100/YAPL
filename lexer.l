@@ -11,6 +11,15 @@
 	 * the compiler warnings for them.
 	 */
 	#pragma GCC diagnostic ignored "-Wunused-function"
+
+	int currow = 1, curcol = 1;
+
+	#define UPDATE_COL() do {						\
+		yylloc.first_column = curcol;					\
+		curcol += strlen(yytext);						\
+		yylloc.last_column = curcol;					\
+		yylloc.first_line = yylloc.last_line = currow;	\
+	} while (0)
 %}
 
 DIGIT [0-9]
@@ -19,7 +28,7 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 
 %%
 
-{NUMBER} {yylval.intval = atoi(yytext); return TK_NUMBER;}
+{NUMBER} {yylval.intval = atoi(yytext); UPDATE_COL(); return TK_NUMBER;}
 
 {NAME} {
 	yylval.intval = st_get(yytext);
@@ -29,18 +38,22 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 		add_to_data_sect(yytext, "0", DWORD);
 	}
 
+	UPDATE_COL();
+
 	return TK_NAME;
 }
 
-"+" { return TK_PLUS; }
-"-" { return TK_MINUS; }
-"*" { return TK_MUL; }
-"/" { return TK_DIV; }
-"=" { return TK_ASSIGN; }
+"+" { UPDATE_COL(); return TK_PLUS; }
+"-" { UPDATE_COL(); return TK_MINUS; }
+"*" { UPDATE_COL(); return TK_MUL; }
+"/" { UPDATE_COL(); return TK_DIV; }
+"=" { UPDATE_COL(); return TK_ASSIGN; }
 
-"\n" { return TK_NEWLINE; }
+"\n" { currow++; curcol = 1; return TK_NEWLINE; }
 
-[ \t]+ {}
+[ \t]+ { UPDATE_COL(); }
+
+. { UPDATE_COL(); return TK_BADCHAR; }
 %%
 
 int
