@@ -1,5 +1,8 @@
 %{
 	#include <stdio.h>
+	#include <string.h>
+	#include <errno.h>
+	#include <stdlib.h>
 
 	#include <yapl.h>
 	#include <symbol_table.h>
@@ -7,6 +10,7 @@
 
 	void yyerror(const char *);
 	int yylex();
+	static char *parse_exp(char *, char *, int);
 %}
 
 %union {
@@ -71,25 +75,96 @@ input:
 
 line:
 	  TK_NEWLINE
-	| exp TK_NEWLINE { gen_exp_val(); }
-	| assign TK_NEWLINE
+	| exp TK_NEWLINE {
+		char *exp, *expval, *buf;
+
+		exp = $<strval>1;
+		expval = gen_exp_val();
+
+		buf = malloc(sizeof(*buf) * (strlen(exp) + strlen(expval) + 1));
+		if (buf == NULL) {
+			printf("Failed to allocate internal buffer: %s", strerror(errno));
+			exit(1);
+		}
+
+		strcpy(buf, exp);
+		strcat(buf, expval);
+
+		append_to_text(buf);
+
+		free(exp);
+		free(expval);
+		free(buf);
+	}
+	| assign TK_NEWLINE {
+		append_to_text($<strval>1);
+		free($<strval>1);
+	}
 	;
 
 assign:
 	TK_NAME TK_ASSIGN exp {
-		gen_assign_exp($<intval>1);
+		char *exp, *buf, *assign;
+
+		exp = $<strval>3;
+		assign = gen_assign_exp($<intval>1);
+
+		buf = malloc(sizeof(*buf) * (strlen(exp) + strlen(assign) + 1));
+		if (buf == NULL) {
+			printf("Failed to allocate internal buffer: %s", strerror(errno));
+			exit(1);
+		}
+
+		strcpy(buf, exp);
+		strcat(buf, assign);
+
+		free(exp);
+		free(assign);
+
+		$<strval>$ = buf;
 	}
 	;
 
 exp:
-	  TK_NUMBER { gen_exp_num($<intval>1); }
-	| TK_NAME { gen_exp_name($<intval>1); }
-	| exp TK_PLUS exp { gen_exp_arith(TK_PLUS); }
-	| exp TK_MINUS exp { gen_exp_arith(TK_MINUS); }
-	| exp TK_MUL exp { gen_exp_arith(TK_MUL); }
-	| exp TK_DIV exp { gen_exp_arith(TK_DIV); }
+	  TK_NUMBER { $<strval>$ = gen_exp_num($<intval>1); }
+	| TK_NAME { $<strval>$ = gen_exp_name($<intval>1); }
+	| exp TK_PLUS exp { $<strval>$ = parse_exp($<strval>1, $<strval>3, TK_PLUS); }
+	| exp TK_MINUS exp { $<strval>$ = parse_exp($<strval>1, $<strval>3, TK_MINUS); }
+	| exp TK_MUL exp { $<strval>$ = parse_exp($<strval>1, $<strval>3, TK_MUL); }
+	| exp TK_DIV exp { $<strval>$ = parse_exp($<strval>1, $<strval>3, TK_DIV); }
 	;
 %%
+
+/*
+ * Concatenate the code for exp1 and exp2, and then the code generated for op.
+ * Clean up all the previous buffers and return the expression evaluation code
+ * generated so far.
+ */
+static
+char *
+parse_exp(char *exp1, char *exp2, int op)
+{
+	char *buf, *genop;
+
+	genop = gen_exp_arith(op);
+
+	buf = malloc(sizeof(*buf) *
+		(strlen(exp1) + strlen(exp2) + strlen(genop) + 1));
+	if (buf == NULL) {
+		printf("Failed to allocate internal buffer: %s", strerror(errno));
+		exit(1);
+	}
+
+	strcpy(buf, exp1);
+	strcat(buf, exp2);
+	strcat(buf, genop);
+
+	free(exp1);
+	free(exp2);
+	free(genop);
+
+	return buf;
+}
 
 void
 yyerror(const char *msg)

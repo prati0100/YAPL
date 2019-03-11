@@ -210,7 +210,7 @@ init_text_sect()
 	strcat(gen_text_sect, start);
 }
 
-int
+char *
 gen_exp_arith(int op)
 {
 	char buf[BUFFER_SZ];
@@ -234,30 +234,25 @@ gen_exp_arith(int op)
 		break;
 	default:
 		printf("%s: Unrecongized arithmetic operator: %d\n", __func__, op);
-		return EINVAL;
+		return NULL;
 	}
 
-	/* TODO: Possibility of a buffer overflow. */
-	strcat(gen_text_sect, buf);
-	strcat(gen_text_sect, exp_finish);
+	strcat(buf, exp_finish);
 
-	return 0;
+	return strdup(buf);
 }
 
-int
+char *
 gen_exp_num(int number)
 {
 	char buf[BUFFER_SZ];
 
 	snprintf(buf, BUFFER_SZ, eval_exp_num, number);
 
-	/* TODO: Possibility of a buffer overflow. */
-	strcat(gen_text_sect, buf);
-
-	return 0;
+	return strdup(buf);
 }
 
-int
+char *
 gen_exp_name(int stent)
 {
 	char buf[BUFFER_SZ];
@@ -268,13 +263,10 @@ gen_exp_name(int stent)
 		get_reg_from_sz(symbol_table[stent]->size),
 		symbol_table[stent]->text);
 
-	/* TODO: Possibility of a buffer overflow. */
-	strcat(gen_text_sect, buf);
-
-	return 0;
+	return strdup(buf);
 }
 
-int
+char *
 gen_assign_exp(int stent)
 {
 	char buf[BUFFER_SZ];
@@ -284,19 +276,22 @@ gen_assign_exp(int stent)
 	snprintf(buf, BUFFER_SZ, assign_exp, symbol_table[stent]->text,
 		get_reg_from_sz(symbol_table[stent]->size));
 
+	return strdup(buf);
+}
+
+int
+append_to_text(char *str)
+{
 	/* TODO: Possibility of a buffer overflow. */
-	strcat(gen_text_sect, buf);
+	strcat(gen_text_sect, str);
 
 	return 0;
 }
 
-int
+char *
 gen_exp_val()
 {
-	/* TODO: Possibility of a buffer overflow. */
-	strcat(gen_text_sect, exp_val);
-
-	return 0;
+	return strdup(exp_val);
 }
 
 int
