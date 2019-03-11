@@ -3,6 +3,7 @@
 	#include <string.h>
 	#include <errno.h>
 	#include <stdlib.h>
+	#include <stdbool.h>
 
 	#include <yapl.h>
 	#include <symbol_table.h>
@@ -11,7 +12,13 @@
 	void yyerror(const char *);
 	int yylex();
 	static char *parse_exp(char *, char *, int);
+
+	bool parse_err = 0;
+	extern int currow;
 %}
+
+%define parse.error verbose
+%locations
 
 %union {
 	int intval;
@@ -100,6 +107,7 @@ line:
 		append_to_text($<strval>1);
 		free($<strval>1);
 	}
+	| error TK_NEWLINE
 	;
 
 assign:
@@ -169,5 +177,6 @@ parse_exp(char *exp1, char *exp2, int op)
 void
 yyerror(const char *msg)
 {
-	printf("%s\n", msg);
+	printf("Line %d: %s\n", currow, msg);
+	parse_err = true;
 }

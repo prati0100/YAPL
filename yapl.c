@@ -4,11 +4,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include <yapl.h>
 #include <codegen.h>
 
 extern FILE *yyin;
+extern bool parse_err;
 
 FILE *outfile;
 
@@ -183,6 +185,10 @@ main(int argc, char *argv[]) {
 	init_data_sect();
 
 	yyparse();
+
+	if (parse_err) {
+		return 1;
+	}
 
 	gen_exit();
 
