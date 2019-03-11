@@ -106,7 +106,9 @@ char *exit_asm =
 
 /* Generated code buffers. These will be sent to the assembler. */
 char *gen_data_sect = NULL;
+int gen_data_sz;
 char *gen_text_sect = NULL;
+int gen_text_sz;
 
 /*
  * Get the corresponding register for the data size. Returns only the varions
@@ -148,6 +150,8 @@ init_data_sect()
 		exit(1);
 	}
 
+	gen_data_sz = BUFFER_SZ;
+
 	*gen_data_sect = '\0'; /* For use with strcat. */
 	strcat(gen_data_sect, section_data);
 }
@@ -181,7 +185,16 @@ add_to_data_sect(char *name, char *value, enum data_size size)
 		return EINVAL;
 	}
 
-	/* TODO: Possibility of a buffer overflow. */
+	while ((strlen(gen_data_sect) + strlen(buf)) >= gen_data_sz) {
+		gen_data_sect = realloc(gen_data_sect, gen_data_sz + BUFFER_SZ);
+		if (gen_data_sect == NULL) {
+			printf("Failed to allocate internal buffer: %s\n", strerror(errno));
+			exit(1);
+		}
+
+		gen_data_sz += BUFFER_SZ;
+	}
+
 	strcat(gen_data_sect, buf);
 
 	return 0;
@@ -204,6 +217,8 @@ init_text_sect()
 			strerror(errno));
 		exit(1);
 	}
+
+	gen_text_sz = BUFFER_SZ;
 
 	*gen_text_sect = '\0'; /* For use with strcat. */
 	strcat(gen_text_sect, section_text);
@@ -282,7 +297,16 @@ gen_assign_exp(int stent)
 int
 append_to_text(char *str)
 {
-	/* TODO: Possibility of a buffer overflow. */
+	while ((strlen(gen_text_sect) + strlen(str)) >= gen_text_sz) {
+		gen_text_sect = realloc(gen_text_sect, gen_text_sz + BUFFER_SZ);
+		if (gen_text_sect == NULL) {
+			printf("Failed to allocate internal buffer: %s\n", strerror(errno));
+			exit(1);
+		}
+
+		gen_text_sz += BUFFER_SZ;
+	}
+
 	strcat(gen_text_sect, str);
 
 	return 0;
