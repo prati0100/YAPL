@@ -25,4 +25,15 @@ enum data_size {
 	QWORD
 };
 
+enum data_type {
+	INT,
+	UINT,
+	CHAR,
+	UCHAR,
+	LONG,
+	ULONG,
+	SHORT,
+	USHORT
+};
+
 #endif /* __YAPL_H__ */
