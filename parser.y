@@ -159,6 +159,10 @@ assign:
 	}
 	;
 
+/*
+ * TODO: The code generated for expressions has too many memory operations. Try
+ * to reduce them, and use more registers.
+ */
 exp:
 	  TK_NUMBER { $<strval>$ = gen_exp_num($<intval>1); }
 	| TK_NAME { $<strval>$ = gen_exp_name($<intval>1); }
