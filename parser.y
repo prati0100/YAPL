@@ -51,11 +51,14 @@
 %token TK_MINUS
 %token TK_MUL
 %token TK_DIV
-%token TK_EQ
-%token TK_GE
-%token TK_LE
-%token TK_NE
-%token TK_ASSIGN
+%token TK_EQ		/* == */
+%token TK_GE		/* >= */
+%token TK_LE		/* <= */
+%token TK_NE		/* != */
+%token TK_ASSIGN	/* = */
+%token TK_COLON
+%token TK_LP		/* ( */
+%token TK_RP		/* ) */
 %token TK_NUMBER
 %token TK_NAME
 %token TK_STRING

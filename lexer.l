@@ -48,6 +48,9 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "*" { UPDATE_COL(); return TK_MUL; }
 "/" { UPDATE_COL(); return TK_DIV; }
 "=" { UPDATE_COL(); return TK_ASSIGN; }
+":" { UPDATE_COL(); return TK_COLON; }
+"(" { UPDATE_COL(); return TK_LP; }
+")" { UPDATE_COL(); return TK_RP; }
 
 "\n" { currow++; curcol = 1; return TK_NEWLINE; }
 
