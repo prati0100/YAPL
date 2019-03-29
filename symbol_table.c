@@ -63,16 +63,15 @@ st_init()
 	}
 }
 
+/* TODO: TK_TYPE is useless. */
 int
 st_insert(char *text, int tk_type)
 {
-	int error;
-
 	if (st_endidx == st_cursz) {
-		error = st_grow();
-
-		/* XXX Maybe do something useful with the return code? */
-		ASSERT(error == 0, "Can't grow the symbol table");
+		if (st_grow()) {
+			printf("Failed to grow symbol table\n");
+			exit(1);
+		}
 	}
 
 	symbol_table[st_endidx++] = st_entry_create(text, tk_type);
