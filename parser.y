@@ -71,14 +71,41 @@
 %left TK_MUL TK_DIV
 
 %%
+/* TODO: This needs to be changed to input: declaration | function_definition */
 input:
-	  %empty
-	| input block
+	block {
+		/*
+		 * Append the entire block to the text section for now. Later this rule
+		 * will change to a combinations of declarations and definitions.
+		 */
+		append_to_text($<strval>1);
+
+		free($<strval>1);
+	}
 	;
 
 block:
-	  %empty
-	| stat block
+	  stat { $<strval>$ = $<strval>1; }
+	| block stat {
+		char *stat, *block, *buf;
+
+		block = $<strval>1;
+		stat = $<strval>2;
+
+		buf = malloc(sizeof(*buf) * (strlen(block) + strlen(stat) + 1));
+		if (buf == NULL) {
+			printf("Failed to allocate internal buffer: %s", strerror(errno));
+			exit(1);
+		}
+
+		strcpy(buf, block);
+		strcat(buf, stat);
+
+		free(block);
+		free(stat);
+
+		$<strval>$ = buf;
+	}
 	;
 
 stat:
