@@ -98,15 +98,13 @@ stat:
 		strcpy(buf, exp);
 		strcat(buf, expval);
 
-		append_to_text(buf);
-
 		free(exp);
 		free(expval);
-		free(buf);
+
+		$<strval>$ = buf;
 	}
 	| assign TK_NEWLINE {
-		append_to_text($<strval>1);
-		free($<strval>1);
+		$<strval>$ = $<strval>1;
 	}
 	| error TK_NEWLINE
 	;
