@@ -1,8 +1,6 @@
 #ifndef __YAPL_H__
 #define __YAPL_H__
 
-#include "parser.tab.h"
-
 #ifdef YAPL_DEBUG
 #define ASSERT(cond, fmt, args...)	do {									\
 	if (!(cond)) {															\

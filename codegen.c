@@ -24,6 +24,8 @@
 #include <symbol_table.h>
 #include <codegen.h>
 
+#include "parser.tab.h"
+
 #define BUFFER_SZ 1500
 
 /* ---------------------------- Templates ------------------------------- */

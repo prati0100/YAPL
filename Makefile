@@ -1,8 +1,8 @@
 CC = gcc
-INCLUDES = -I .
+INCLUDES = -I include
 CFLAGS = -Wall -Wshadow
 DEBUGFLAGS = -D YAPL_DEBUG -g
-DEPS = *.h
+DEPS = include/*.h
 OBJDIR = objs
 BINDIR = bin
 

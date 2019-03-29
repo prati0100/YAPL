@@ -6,6 +6,8 @@
 	#include <symbol_table.h>
 	#include <codegen.h>
 
+	#include "parser.tab.h"
+
 	/*
 	 * yyunput() and input() are in the generated file but are unused. Disable
 	 * the compiler warnings for them.
