@@ -60,8 +60,11 @@
 %token TK_MINUS
 %token TK_MUL
 %token TK_DIV
+%token TK_MOD		/* % */
 %token TK_EQ		/* == */
+%token TK_GT		/* > */
 %token TK_GE		/* >= */
+%token TK_LT		/* < */
 %token TK_LE		/* <= */
 %token TK_NE		/* != */
 %token TK_ASSIGN	/* = */
@@ -84,8 +87,10 @@
 %token TK_BADCHAR;
 
 %left TK_MINUS TK_PLUS
-%left TK_MUL TK_DIV
-%left TK_ELSEIF
+%left TK_MUL TK_DIV TK_MOD
+%left TK_GE TK_GT TK_LE TK_LT TK_EQ TK_NE TK_AND TK_OR
+%right TK_NOT
+%left TK_ASSIGN
 
 %%
 input:
@@ -236,6 +241,17 @@ exp:
 	| exp TK_MINUS exp
 	| exp TK_MUL exp
 	| exp TK_DIV exp
+	| exp TK_MOD exp
+	| exp TK_GT exp
+	| exp TK_LT exp
+	| exp TK_GE exp
+	| exp TK_LE exp
+	| exp TK_EQ exp
+	| exp TK_NE exp
+	| exp TK_AND exp
+	| exp TK_OR exp
+	| TK_MINUS exp
+	| TK_NOT exp
 	| functioncall
 	| assign
 	;
