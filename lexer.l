@@ -29,6 +29,22 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 
 %%
 
+"local" { UPDATE_COL(); return TK_LOCAL; }
+"global" { UPDATE_COL(); return TK_GLOBAL; }
+"extern" { UPDATE_COL(); return TK_EXTERN; }
+"fn" { UPDATE_COL(); return TK_FN; }
+"start" { UPDATE_COL(); return TK_START; }
+"end" { UPDATE_COL(); return TK_END; }
+"int" { UPDATE_COL(); return TK_INT; }
+"uint" { UPDATE_COL(); return TK_UINT; }
+"char" { UPDATE_COL(); return TK_CHAR; }
+"uchar" { UPDATE_COL(); return TK_UCHAR; }
+"long" { UPDATE_COL(); return TK_LONG; }
+"ulong" { UPDATE_COL(); return TK_ULONG; }
+"short" { UPDATE_COL(); return TK_SHORT; }
+"ushort" { UPDATE_COL(); return TK_USHORT; }
+
+
 {NUMBER} {yylval.intval = atoi(yytext); UPDATE_COL(); return TK_NUMBER;}
 
 {NAME} {
@@ -50,6 +66,7 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 ":" { UPDATE_COL(); return TK_COLON; }
 "(" { UPDATE_COL(); return TK_LP; }
 ")" { UPDATE_COL(); return TK_RP; }
+"," { UPDATE_COL(); return TK_COMMA; }
 
 "\n" { currow++; curcol = 1; return TK_NEWLINE; }
 

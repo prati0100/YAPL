@@ -37,6 +37,8 @@
 %token TK_IF
 %token TK_IN
 %token TK_LOCAL
+%token TK_GLOBAL
+%token TK_EXTERN
 %token TK_NULL
 %token TK_NOT
 %token TK_OR
@@ -44,6 +46,14 @@
 %token TK_THEN
 %token TK_TRUE
 %token TK_WHILE
+%token TK_INT
+%token TK_UINT
+%token TK_CHAR
+%token TK_UCHAR
+%token TK_SHORT
+%token TK_USHORT
+%token TK_LONG
+%token TK_ULONG
 
 %token TK_PLUS
 %token TK_MINUS
@@ -58,7 +68,6 @@
 %token TK_LP		/* ( */
 %token TK_RP		/* ) */
 %token TK_COMMA
-%token TK_TYPE
 %token TK_NUMBER
 %token TK_NAME
 %token TK_STRING
