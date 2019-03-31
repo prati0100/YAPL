@@ -83,9 +83,8 @@
 %left TK_MUL TK_DIV
 
 %%
-/* TODO: This needs to be changed to input: declaration | function_definition */
 input:
-	block
+	funcdecl | namedecl | input funcdecl | input namedecl | input TK_NEWLINE
 	;
 
 funcdecl:
