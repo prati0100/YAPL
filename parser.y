@@ -87,6 +87,37 @@ input:
 	}
 	;
 
+funcdecl:
+	TK_FN TK_NAME TK_COLON TK_LP parlist TK_RP funcbody {
+		int stent = $<intval>2;
+
+		symbol_table[stent]->is_fn = true;
+		symbol_table[stent]->params = $<params>5;
+
+		gen_func_decl(symbol_table[stent]->text, $<strval>7);
+	}
+	;
+
+funcbody:
+	TK_START block TK_END {
+		$<strval>$ = $<strval>2;
+	}
+	;
+
+param:
+	TK_TYPE TK_NAME
+	;
+
+parlist:
+	  param moreparams
+	| param
+	;
+
+moreparams:
+	  TK_COMMA param
+	| TK_COMMA param moreparams
+	;
+
 block:
 	  stat { $<strval>$ = $<strval>1; }
 	| block stat {

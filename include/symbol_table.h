@@ -3,11 +3,19 @@
 
 #include <yapl.h>
 
+/* The number of parameters for a function and its parameter types. */
+struct paramlist {
+	int num_params;
+	enum data_type *types;
+};
+
 struct st_entry {
 	char *text;
 	int tk_type;
 	enum data_size size;
 	int value;
+	bool is_fn;
+	struct paramlist *params;
 };
 
 extern struct st_entry **symbol_table;

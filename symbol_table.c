@@ -30,6 +30,8 @@ st_entry_create(char *text, int tk_type)
 	s->tk_type = tk_type;
 	s->value = 0;
 	s->size = DWORD;
+	s->is_fn = false;
+	s->params = NULL;
 
 	return s;
 }
