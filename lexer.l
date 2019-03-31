@@ -41,6 +41,8 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "then" { UPDATE_COL(); return TK_THEN; }
 "else" { UPDATE_COL(); return TK_ELSE; }
 "elseif" { UPDATE_COL(); return TK_ELSEIF; }
+"for" { UPDATE_COL(); return TK_FOR; }
+"while" { UPDATE_COL(); return TK_WHILE; }
 
 "int" { UPDATE_COL(); return TK_INT; }
 "uint" { UPDATE_COL(); return TK_UINT; }
@@ -76,6 +78,7 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "," { UPDATE_COL(); return TK_COMMA; }
 "[" { UPDATE_COL(); return TK_LSB; }
 "]" { UPDATE_COL(); return TK_RSB; }
+";" { UPDATE_COL(); return TK_SEMICOLON; }
 
 "\n" { currow++; curcol = 1; return TK_NEWLINE; }
 

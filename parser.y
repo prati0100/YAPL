@@ -71,6 +71,7 @@
 %token TK_LSB		/* [ */
 %token TK_RSB		/* ] */
 %token TK_COMMA
+%token TK_SEMICOLON
 %token TK_NUMBER
 %token TK_NAME
 %token TK_STRING
@@ -121,6 +122,13 @@ stat:
 	| error TK_NEWLINE
 	| namedecl TK_NEWLINE
 	| conditional TK_NEWLINE
+	| forloop TK_NEWLINE
+	| whileloop TK_NEWLINE
+	;
+
+optnamelist:
+	  %empty
+	| namelist
 	;
 
 namelist:
@@ -153,6 +161,14 @@ optelse:
 optelseifs:
 	  %empty
 	| TK_ELSEIF exp TK_THEN block optelseifs
+	;
+
+forloop:
+	TK_FOR optnamelist TK_SEMICOLON optexp TK_SEMICOLON optexplist TK_SEMICOLON TK_START block TK_END
+	;
+
+whileloop:
+	TK_WHILE exp TK_START block TK_END
 	;
 
 scope:
@@ -195,6 +211,21 @@ args:
 arglist:
 	  exp
 	| arglist TK_COMMA exp
+	;
+
+optexplist:
+	  %empty
+	| explist
+	;
+
+explist:
+	  exp
+	| explist TK_COMMA exp
+	;
+
+optexp:
+	  %empty
+	| exp
 	;
 
 exp:
