@@ -32,9 +32,15 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "local" { UPDATE_COL(); return TK_LOCAL; }
 "global" { UPDATE_COL(); return TK_GLOBAL; }
 "extern" { UPDATE_COL(); return TK_EXTERN; }
+
 "fn" { UPDATE_COL(); return TK_FN; }
 "start" { UPDATE_COL(); return TK_START; }
 "end" { UPDATE_COL(); return TK_END; }
+"if" { UPDATE_COL(); return TK_IF; }
+"then" { UPDATE_COL(); return TK_THEN; }
+"else" { UPDATE_COL(); return TK_ELSE; }
+"elseif" { UPDATE_COL(); return TK_ELSEIF; }
+
 "int" { UPDATE_COL(); return TK_INT; }
 "uint" { UPDATE_COL(); return TK_UINT; }
 "char" { UPDATE_COL(); return TK_CHAR; }

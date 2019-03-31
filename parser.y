@@ -81,6 +81,7 @@
 
 %left TK_MINUS TK_PLUS
 %left TK_MUL TK_DIV
+%left TK_ELSEIF
 
 %%
 input:
@@ -116,6 +117,7 @@ stat:
 	| assign TK_NEWLINE
 	| error TK_NEWLINE
 	| namedecl TK_NEWLINE
+	| conditional TK_NEWLINE
 	;
 
 namelist:
@@ -134,6 +136,20 @@ optassign:
 
 assign:
 	TK_NAME TK_ASSIGN exp
+	;
+
+conditional:
+	TK_IF exp TK_THEN block optelseifs optelse TK_END
+	;
+
+optelse:
+	  TK_ELSE block
+	| %empty
+	;
+
+optelseifs:
+	  %empty
+	| TK_ELSEIF exp TK_THEN block optelseifs
 	;
 
 scope:
