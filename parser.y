@@ -97,17 +97,13 @@ funcbody:
 	;
 
 param:
-	TK_TYPE TK_NAME
+	type TK_NAME
 	;
 
 parlist:
-	  param moreparams
-	| param
-	;
-
-moreparams:
-	  TK_COMMA param
-	| TK_COMMA param moreparams
+	  param
+	| parlist TK_COMMA param
+	| %empty
 	;
 
 block:
