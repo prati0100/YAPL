@@ -43,6 +43,8 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "elseif" { UPDATE_COL(); return TK_ELSEIF; }
 "for" { UPDATE_COL(); return TK_FOR; }
 "while" { UPDATE_COL(); return TK_WHILE; }
+"return" { UPDATE_COL(); return TK_RETURN; }
+"break" { UPDATE_COL(); return TK_BREAK; }
 
 "int" { UPDATE_COL(); return TK_INT; }
 "uint" { UPDATE_COL(); return TK_UINT; }

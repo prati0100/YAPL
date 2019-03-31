@@ -124,6 +124,8 @@ stat:
 	| conditional TK_NEWLINE
 	| forloop TK_NEWLINE
 	| whileloop TK_NEWLINE
+	| TK_RETURN TK_LSB exp TK_RSB TK_NEWLINE
+	| TK_BREAK TK_NEWLINE
 	;
 
 optnamelist:
