@@ -130,6 +130,6 @@ exp:
 void
 yyerror(const char *msg)
 {
-	printf("Line %d: %s\n", currow, msg);
+	printf("Error at line %d: %s\n", currow, msg);
 	parse_err = true;
 }
