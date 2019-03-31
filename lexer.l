@@ -49,6 +49,9 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "and" { UPDATE_COL(); return TK_AND; }
 "or" { UPDATE_COL(); return TK_OR; }
 "not" { UPDATE_COL(); return TK_NOT; }
+"true" { UPDATE_COL(); return TK_TRUE; }
+"false" { UPDATE_COL(); return TK_FALSE; }
+"null" { UPDATE_COL(); return TK_NULL; }
 
 "int" { UPDATE_COL(); return TK_INT; }
 "uint" { UPDATE_COL(); return TK_UINT; }

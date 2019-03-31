@@ -236,6 +236,9 @@ optexp:
 
 exp:
 	  TK_NUMBER
+	| TK_NULL
+	| TK_TRUE
+	| TK_FALSE
 	| var
 	| exp TK_PLUS exp
 	| exp TK_MINUS exp
