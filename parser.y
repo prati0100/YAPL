@@ -68,6 +68,8 @@
 %token TK_COLON
 %token TK_LP		/* ( */
 %token TK_RP		/* ) */
+%token TK_LSB		/* [ */
+%token TK_RSB		/* ] */
 %token TK_COMMA
 %token TK_NUMBER
 %token TK_NAME
@@ -170,6 +172,17 @@ type:
 	| TK_USHORT
 	;
 
+var:
+	  TK_NAME
+	| prefixexp TK_LSB exp TK_RSB
+	;
+
+prefixexp:
+	  var
+	| functioncall
+	| TK_LP exp TK_RP
+	;
+
 functioncall:
 	TK_CALL TK_NAME TK_COLON args
 	;
@@ -186,7 +199,7 @@ arglist:
 
 exp:
 	  TK_NUMBER
-	| TK_NAME
+	| var
 	| exp TK_PLUS exp
 	| exp TK_MINUS exp
 	| exp TK_MUL exp

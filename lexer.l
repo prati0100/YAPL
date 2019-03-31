@@ -74,6 +74,8 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "(" { UPDATE_COL(); return TK_LP; }
 ")" { UPDATE_COL(); return TK_RP; }
 "," { UPDATE_COL(); return TK_COMMA; }
+"[" { UPDATE_COL(); return TK_LSB; }
+"]" { UPDATE_COL(); return TK_RSB; }
 
 "\n" { currow++; curcol = 1; return TK_NEWLINE; }
 
