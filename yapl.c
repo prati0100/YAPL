@@ -53,7 +53,10 @@ main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	yyparse();
+	if (yyparse()) {
+		printf("Parsing failed\n");
+	} else {
+		printf("Parsed successfully\n");
 	}
 
 	return 0;
