@@ -138,7 +138,7 @@ optassign:
 	;
 
 assign:
-	TK_NAME TK_ASSIGN exp
+	var TK_ASSIGN exp
 	;
 
 conditional:
