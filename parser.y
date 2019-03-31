@@ -34,6 +34,7 @@
 %token TK_FALSE
 %token TK_FOR
 %token TK_FN
+%token TK_CALL
 %token TK_IF
 %token TK_IN
 %token TK_LOCAL
@@ -169,6 +170,20 @@ type:
 	| TK_USHORT
 	;
 
+functioncall:
+	TK_CALL TK_NAME TK_COLON args
+	;
+
+args:
+	  TK_LP arglist TK_RP
+	| TK_LP TK_RP
+	;
+
+arglist:
+	  exp
+	| arglist TK_COMMA exp
+	;
+
 exp:
 	  TK_NUMBER
 	| TK_NAME
@@ -176,6 +191,7 @@ exp:
 	| exp TK_MINUS exp
 	| exp TK_MUL exp
 	| exp TK_DIV exp
+	| functioncall
 	;
 %%
 

@@ -34,6 +34,7 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "extern" { UPDATE_COL(); return TK_EXTERN; }
 
 "fn" { UPDATE_COL(); return TK_FN; }
+"call" { UPDATE_COL(); return TK_CALL; }
 "start" { UPDATE_COL(); return TK_START; }
 "end" { UPDATE_COL(); return TK_END; }
 "if" { UPDATE_COL(); return TK_IF; }
