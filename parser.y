@@ -89,7 +89,7 @@ input:
 	;
 
 funcdecl:
-	TK_FN TK_NAME TK_COLON TK_LP parlist TK_RP funcbody
+	TK_FN type TK_NAME TK_COLON TK_LP parlist TK_RP funcbody
 	;
 
 funcbody:
