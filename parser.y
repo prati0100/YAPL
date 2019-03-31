@@ -116,6 +116,21 @@ stat:
 	| exp TK_NEWLINE
 	| assign TK_NEWLINE
 	| error TK_NEWLINE
+	| namedecl TK_NEWLINE
+	;
+
+namelist:
+	  TK_NAME optassign
+	| namelist TK_COMMA TK_NAME optassign
+	;
+
+namedecl:
+	scope type namelist
+	;
+
+optassign:
+	  %empty
+	| TK_ASSIGN exp
 	;
 
 assign:
