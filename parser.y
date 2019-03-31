@@ -205,6 +205,7 @@ exp:
 	| exp TK_MUL exp
 	| exp TK_DIV exp
 	| functioncall
+	| assign
 	;
 %%
 
