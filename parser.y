@@ -126,6 +126,23 @@ assign:
 	TK_NAME TK_ASSIGN exp
 	;
 
+scope:
+	  TK_LOCAL
+	| TK_GLOBAL
+	| TK_EXTERN
+	;
+
+type:
+	  TK_INT
+	| TK_UINT
+	| TK_CHAR
+	| TK_UCHAR
+	| TK_LONG
+	| TK_ULONG
+	| TK_SHORT
+	| TK_USHORT
+	;
+
 exp:
 	  TK_NUMBER
 	| TK_NAME
