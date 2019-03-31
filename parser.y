@@ -118,7 +118,6 @@ block:
 stat:
 	  TK_NEWLINE
 	| exp TK_NEWLINE
-	| assign TK_NEWLINE
 	| error TK_NEWLINE
 	| namedecl TK_NEWLINE
 	| conditional TK_NEWLINE
