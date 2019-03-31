@@ -1,6 +1,8 @@
 #ifndef __SYMBOL_TABLE_H__
 #define __SYMBOL_TABLE_H__
 
+#include <stdbool.h>
+
 #include <yapl.h>
 
 /* The number of parameters for a function and its parameter types. */

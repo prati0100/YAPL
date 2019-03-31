@@ -57,6 +57,8 @@
 %token TK_COLON
 %token TK_LP		/* ( */
 %token TK_RP		/* ) */
+%token TK_COMMA
+%token TK_TYPE
 %token TK_NUMBER
 %token TK_NAME
 %token TK_STRING
