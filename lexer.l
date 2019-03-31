@@ -4,7 +4,6 @@
 
 	#include <yapl.h>
 	#include <symbol_table.h>
-	#include <codegen.h>
 
 	#include "parser.tab.h"
 
@@ -36,8 +35,6 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 	yylval.intval = st_get(yytext);
 	if (yylval.intval == -1) {
 		yylval.intval = st_insert(yytext, TK_NAME);
-		/* XXX Hacky? */
-		add_to_data_sect(yytext, "0", DWORD);
 	}
 
 	UPDATE_COL();

@@ -7,11 +7,9 @@
 
 	#include <yapl.h>
 	#include <symbol_table.h>
-	#include <codegen.h>
 
 	void yyerror(const char *);
 	int yylex();
-	static char *parse_exp(char *, char *, int);
 
 	bool parse_err = 0;
 	extern int currow;
@@ -76,32 +74,15 @@
 %%
 /* TODO: This needs to be changed to input: declaration | function_definition */
 input:
-	block {
-		/*
-		 * Append the entire block to the text section for now. Later this rule
-		 * will change to a combinations of declarations and definitions.
-		 */
-		append_to_text($<strval>1);
-
-		free($<strval>1);
-	}
+	block
 	;
 
 funcdecl:
-	TK_FN TK_NAME TK_COLON TK_LP parlist TK_RP funcbody {
-		int stent = $<intval>2;
-
-		symbol_table[stent]->is_fn = true;
-		symbol_table[stent]->params = $<params>5;
-
-		gen_func_decl(symbol_table[stent]->text, $<strval>7);
-	}
+	TK_FN TK_NAME TK_COLON TK_LP parlist TK_RP funcbody
 	;
 
 funcbody:
-	TK_START block TK_END {
-		$<strval>$ = $<strval>2;
-	}
+	TK_START block TK_END
 	;
 
 param:
@@ -119,124 +100,30 @@ moreparams:
 	;
 
 block:
-	  stat { $<strval>$ = $<strval>1; }
-	| block stat {
-		char *stat, *block, *buf;
-
-		block = $<strval>1;
-		stat = $<strval>2;
-
-		buf = malloc(sizeof(*buf) * (strlen(block) + strlen(stat) + 1));
-		if (buf == NULL) {
-			printf("Failed to allocate internal buffer: %s", strerror(errno));
-			exit(1);
-		}
-
-		strcpy(buf, block);
-		strcat(buf, stat);
-
-		free(block);
-		free(stat);
-
-		$<strval>$ = buf;
-	}
+	  stat
+	| block stat
 	;
 
 stat:
 	  TK_NEWLINE
-	| exp TK_NEWLINE {
-		char *exp, *expval, *buf;
-
-		exp = $<strval>1;
-		expval = gen_exp_val();
-
-		buf = malloc(sizeof(*buf) * (strlen(exp) + strlen(expval) + 1));
-		if (buf == NULL) {
-			printf("Failed to allocate internal buffer: %s", strerror(errno));
-			exit(1);
-		}
-
-		strcpy(buf, exp);
-		strcat(buf, expval);
-
-		free(exp);
-		free(expval);
-
-		$<strval>$ = buf;
-	}
-	| assign TK_NEWLINE {
-		$<strval>$ = $<strval>1;
-	}
+	| exp TK_NEWLINE
+	| assign TK_NEWLINE
 	| error TK_NEWLINE
 	;
 
 assign:
-	TK_NAME TK_ASSIGN exp {
-		char *exp, *buf, *assign;
-
-		exp = $<strval>3;
-		assign = gen_assign_exp($<intval>1);
-
-		buf = malloc(sizeof(*buf) * (strlen(exp) + strlen(assign) + 1));
-		if (buf == NULL) {
-			printf("Failed to allocate internal buffer: %s", strerror(errno));
-			exit(1);
-		}
-
-		strcpy(buf, exp);
-		strcat(buf, assign);
-
-		free(exp);
-		free(assign);
-
-		$<strval>$ = buf;
-	}
+	TK_NAME TK_ASSIGN exp
 	;
 
-/*
- * TODO: The code generated for expressions has too many memory operations. Try
- * to reduce them, and use more registers.
- */
 exp:
-	  TK_NUMBER { $<strval>$ = gen_exp_num($<intval>1); }
-	| TK_NAME { $<strval>$ = gen_exp_name($<intval>1); }
-	| exp TK_PLUS exp { $<strval>$ = parse_exp($<strval>1, $<strval>3, TK_PLUS); }
-	| exp TK_MINUS exp { $<strval>$ = parse_exp($<strval>1, $<strval>3, TK_MINUS); }
-	| exp TK_MUL exp { $<strval>$ = parse_exp($<strval>1, $<strval>3, TK_MUL); }
-	| exp TK_DIV exp { $<strval>$ = parse_exp($<strval>1, $<strval>3, TK_DIV); }
+	  TK_NUMBER
+	| TK_NAME
+	| exp TK_PLUS exp
+	| exp TK_MINUS exp
+	| exp TK_MUL exp
+	| exp TK_DIV exp
 	;
 %%
-
-/*
- * Concatenate the code for exp1 and exp2, and then the code generated for op.
- * Clean up all the previous buffers and return the expression evaluation code
- * generated so far.
- */
-static
-char *
-parse_exp(char *exp1, char *exp2, int op)
-{
-	char *buf, *genop;
-
-	genop = gen_exp_arith(op);
-
-	buf = malloc(sizeof(*buf) *
-		(strlen(exp1) + strlen(exp2) + strlen(genop) + 1));
-	if (buf == NULL) {
-		printf("Failed to allocate internal buffer: %s", strerror(errno));
-		exit(1);
-	}
-
-	strcpy(buf, exp1);
-	strcat(buf, exp2);
-	strcat(buf, genop);
-
-	free(exp1);
-	free(exp2);
-	free(genop);
-
-	return buf;
-}
 
 void
 yyerror(const char *msg)

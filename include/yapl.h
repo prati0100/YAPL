@@ -18,22 +18,4 @@
 #define DPRINTF(fmt, args...)
 #endif
 
-enum data_size {
-	BYTE,
-	WORD,
-	DWORD,
-	QWORD
-};
-
-enum data_type {
-	INT,
-	UINT,
-	CHAR,
-	UCHAR,
-	LONG,
-	ULONG,
-	SHORT,
-	USHORT
-};
-
 #endif /* __YAPL_H__ */

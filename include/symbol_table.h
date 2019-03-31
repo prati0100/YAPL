@@ -12,7 +12,6 @@ struct paramlist {
 struct st_entry {
 	char *text;
 	int tk_type;
-	enum data_size size;
 	int value;
 	bool is_fn;
 	struct paramlist *params;
