@@ -81,6 +81,8 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 
 [ \t]+ { UPDATE_COL(); }
 
+"~~".*
+
 . { UPDATE_COL(); return TK_BADCHAR; }
 %%
 
