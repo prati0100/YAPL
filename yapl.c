@@ -11,6 +11,8 @@
 extern FILE *yyin;
 extern bool parse_err;
 
+bool gen_dot;
+
 
 /* Bison declarations. */
 int yyparse();
@@ -23,11 +25,13 @@ main(int argc, char *argv[]) {
 	char *infilename;
 	int opt;
 
-
 	infilename = NULL;
+	gen_dot = false;
 
-	while ((opt = getopt(argc, argv, "")) != -1) {
+	while ((opt = getopt(argc, argv, "t")) != -1) {
 		switch (opt) {
+		case 't':
+			gen_dot = true;
 			break;
 		default:
 			return 1;

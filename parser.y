@@ -7,9 +7,15 @@
 
 	#include <yapl.h>
 	#include <symbol_table.h>
+	#include <ast.h>
+
+	#define BUFFER_SZ 256
 
 	void yyerror(const char *);
 	int yylex();
+	static struct ast_node *create_binop_node(struct ast_node *,
+		struct ast_node *, int);
+	static struct ast_node *create_unop_node(struct ast_node *, int);
 
 	bool parse_err = 0;
 	extern int currow;
@@ -21,6 +27,7 @@
 %union {
 	int intval;
 	char *strval;
+	struct ast_node *nodeval;
 }
 
 %token TK_EOF 0
@@ -122,8 +129,12 @@ block:
 	;
 
 stat:
-	  TK_NEWLINE
-	| exp TK_NEWLINE
+	  TK_NEWLINE {printf("Line %d, Foo\n", currow);}
+	| exp TK_NEWLINE {
+		/* XXX: We should output to file and make AST for the entire grammar. */
+		if (gen_dot)
+			printf("%s\n", ast_output_dot($<nodeval>1));
+	}
 	| error TK_NEWLINE
 	| namedecl TK_NEWLINE
 	| conditional TK_NEWLINE
@@ -153,7 +164,12 @@ optassign:
 	;
 
 assign:
-	var TK_ASSIGN exp
+	var TK_ASSIGN exp {
+		$<nodeval>$ = ast_node_create(AST_OP, strdup("="), 2);
+
+		$<nodeval>$->children[0] = $<nodeval>1;
+		$<nodeval>$->children[1] = $<nodeval>3;
+	}
 	;
 
 conditional:
@@ -197,12 +213,18 @@ type:
 	;
 
 var:
-	  TK_NAME
+	  TK_NAME {
+		char *label = strdup(symbol_table[$<intval>1]->text);
+
+		$<nodeval>$ = ast_node_create(AST_NAME, label, 0);
+	}
 	| prefixexp TK_LSB exp TK_RSB
 	;
 
 prefixexp:
-	  var
+	  var {
+		$<nodeval>$ = $<nodeval>1;
+	}
 	| functioncall
 	| TK_LP exp TK_RP
 	;
@@ -237,30 +259,182 @@ optexp:
 	;
 
 exp:
-	  TK_NUMBER
-	| TK_NULL
-	| TK_TRUE
-	| TK_FALSE
-	| TK_STRING
-	| prefixexp
-	| exp TK_PLUS exp
-	| exp TK_MINUS exp
-	| exp TK_MUL exp
-	| exp TK_DIV exp
-	| exp TK_MOD exp
-	| exp TK_GT exp
-	| exp TK_LT exp
-	| exp TK_GE exp
-	| exp TK_LE exp
-	| exp TK_EQ exp
-	| exp TK_NE exp
-	| exp TK_AND exp
-	| exp TK_OR exp
-	| TK_MINUS exp
-	| TK_NOT exp
-	| assign
+	  TK_NUMBER {
+		char label[BUFFER_SZ];
+
+		snprintf(label, BUFFER_SZ, "%d", $<intval>1);
+
+		$<nodeval>$ = ast_node_create(AST_NUM, strdup(label), 0);
+	}
+	| TK_NULL {
+		$<nodeval>$ = ast_node_create(AST_NULL, strdup("null"), 0);
+	}
+	| TK_TRUE {
+		$<nodeval>$ = ast_node_create(AST_TRUE, strdup("true"), 0);
+	}
+	| TK_FALSE {
+		$<nodeval>$ = ast_node_create(AST_FALSE, strdup("false"), 0);
+	}
+	| TK_STRING {
+		char *label;
+		int len;
+
+		/* Length of string, two quotation marks (") and NUL-terminator */
+		/* len = snprintf(NULL, 0, "%s", $<strval>1);
+		label = malloc(sizeof(*label) * (len + 1));
+		if (label == NULL) {
+			printf("Failed to allocate internal buffer\n");
+			exit(1);
+		}
+
+		snprintf(label, len + 1, "%s", $<strval>1); */
+
+		DPRINTF("foo: %s\n", $<strval>1);
+
+		$<nodeval>$ = ast_node_create(AST_STRING, $<strval>1, 0);
+	}
+	| prefixexp {
+		$<nodeval>$ = $<nodeval>1;
+	}
+	| exp TK_PLUS exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_PLUS);
+	}
+	| exp TK_MINUS exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_MINUS);
+	}
+	| exp TK_MUL exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_MUL);
+	}
+	| exp TK_DIV exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_DIV);
+	}
+	| exp TK_MOD exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_MOD);
+	}
+	| exp TK_GT exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_GT);
+	}
+	| exp TK_LT exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_LT);
+	}
+	| exp TK_GE exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_GE);
+	}
+	| exp TK_LE exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_LE);
+	}
+	| exp TK_EQ exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_EQ);
+	}
+	| exp TK_NE exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_NE);
+	}
+	| exp TK_AND exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_AND);
+	}
+	| exp TK_OR exp {
+		$<nodeval>$ = create_binop_node($<nodeval>1, $<nodeval>3, TK_OR);
+	}
+	| TK_MINUS exp {
+		$<nodeval>$ = create_unop_node($<nodeval>2, TK_MINUS);
+	}
+	| TK_NOT exp {
+		$<nodeval>$ = create_unop_node($<nodeval>2, TK_NOT);
+	}
+	| var TK_ASSIGN exp {
+		$<nodeval>$ = ast_node_create(AST_OP, strdup("="), 2);
+
+		$<nodeval>$->children[0] = $<nodeval>1;
+		$<nodeval>$->children[1] = $<nodeval>3;
+	}
 	;
 %%
+
+static
+struct ast_node *
+create_binop_node(struct ast_node *left, struct ast_node *right, int op)
+{
+	char *label;
+	struct ast_node *node;
+
+	switch (op) {
+	case TK_PLUS:
+		label = "+";
+		break;
+	case TK_MINUS:
+		label = "-";
+		break;
+	case TK_MUL:
+		label = "*";
+		break;
+	case TK_DIV:
+		label = "/";
+		break;
+	case TK_MOD:
+		label = "%%";
+		break;
+	case TK_GT:
+		label = ">";
+		break;
+	case TK_LT:
+		label = "<";
+		break;
+	case TK_GE:
+		label = ">=";
+		break;
+	case TK_LE:
+		label = "<";
+		break;
+	case TK_EQ:
+		label = "==";
+		break;
+	case TK_NE:
+		label = "!=";
+		break;
+	case TK_AND:
+		label = "and";
+		break;
+	case TK_OR:
+		label = "or";
+		break;
+	default:
+		DPRINTF("Unrecognized operation\n");
+		return NULL;
+	}
+
+	node = ast_node_create(AST_OP, strdup(label), 2);
+
+	node->children[0] = left;
+	node->children[1] = right;
+
+	return node;
+}
+
+static
+struct ast_node *
+create_unop_node(struct ast_node *right, int op)
+{
+	char *label;
+	struct ast_node *node;
+
+	switch (op) {
+	case TK_NOT:
+		label = "not";
+		break;
+	case TK_MINUS:
+		label = "-";
+		break;
+	default:
+		DPRINTF("Unrecognized operation\n");
+		return NULL;
+	}
+
+	node = ast_node_create(AST_OP, strdup(label), 1);
+
+	node->children[0] = right;
+
+	return node;
+}
 
 void
 yyerror(const char *msg)

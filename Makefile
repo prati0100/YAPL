@@ -6,7 +6,7 @@ DEPS = include/*.h
 OBJDIR = objs
 BINDIR = bin
 
-CFILES = yapl.c lex.yy.c parser.tab.c symbol_table.c
+CFILES = yapl.c lex.yy.c parser.tab.c symbol_table.c ast.c
 
 OBJS = $(patsubst %.c,$(OBJDIR)/%.o,$(CFILES))
 

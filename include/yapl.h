@@ -1,6 +1,8 @@
 #ifndef __YAPL_H__
 #define __YAPL_H__
 
+#include <stdbool.h>
+
 #ifdef YAPL_DEBUG
 #define ASSERT(cond, fmt, args...)	do {									\
 	if (!(cond)) {															\
@@ -17,5 +19,7 @@
 #else
 #define DPRINTF(fmt, args...)
 #endif
+
+extern bool gen_dot;
 
 #endif /* __YAPL_H__ */
