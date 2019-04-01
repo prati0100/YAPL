@@ -19,6 +19,9 @@
 
 	bool parse_err = 0;
 	extern int currow;
+
+	struct ast_node **block_stats;
+	int stat_idx;
 %}
 
 %define parse.error verbose
@@ -124,16 +127,60 @@ parlist:
 	;
 
 block:
-	  stat
-	| block stat
+	blockdash {
+		struct ast_node *block;
+		int i;
+
+		block = ast_node_create(AST_BLOCK, strdup("Block"), stat_idx);
+
+		for (i = 0; i < stat_idx; i++) {
+			block->children[i] = block_stats[i];
+		}
+
+		/*
+		 * XXX Leaking the AST.
+		 */
+		if (gen_dot) {
+			char *str = ast_output_dot(block);
+			printf("%s\n", str);
+			free(str);
+		}
+
+		free(block_stats);
+		block_stats = NULL;
+		stat_idx = 0;
+	}
+	;
+
+blockdash:
+	  stat {
+		if (block_stats == NULL) {
+			/* XXX Max 50 statements supported. */
+			block_stats = malloc(sizeof(*block_stats) * 50);
+			stat_idx = 0;
+		}
+
+		if ($<nodeval>1 != NULL) {
+			block_stats[stat_idx] = $<nodeval>1;
+			stat_idx++;
+		}
+	  }
+	| blockdash stat {
+		ASSERT(block_stats != NULL, "block_stats is NULL");
+
+		if ($<nodeval>2 != NULL) {
+			block_stats[stat_idx] = $<nodeval>2;
+			stat_idx++;
+		}
+	}
 	;
 
 stat:
-	  TK_NEWLINE {printf("Line %d, Foo\n", currow);}
+	  TK_NEWLINE {
+		$<nodeval>$ = NULL;
+	}
 	| exp TK_NEWLINE {
-		/* XXX: We should output to file and make AST for the entire grammar. */
-		if (gen_dot)
-			printf("%s\n", ast_output_dot($<nodeval>1));
+		$<nodeval>$ = $<nodeval>1;
 	}
 	| error TK_NEWLINE
 	| namedecl TK_NEWLINE
