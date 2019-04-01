@@ -94,11 +94,11 @@
 %token TK_NEWLINE;
 %token TK_BADCHAR;
 
+%left TK_ASSIGN
 %left TK_MINUS TK_PLUS
 %left TK_MUL TK_DIV TK_MOD
 %left TK_GE TK_GT TK_LE TK_LT TK_EQ TK_NE TK_AND TK_OR
 %right TK_NOT
-%left TK_ASSIGN
 
 %%
 input:
