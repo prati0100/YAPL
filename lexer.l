@@ -63,20 +63,6 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "ushort" { UPDATE_COL(); return TK_USHORT; }
 "str" { UPDATE_COL(); return TK_STR; }
 
-
-{NUMBER} {yylval.intval = atoi(yytext); UPDATE_COL(); return TK_NUMBER;}
-
-{NAME} {
-	yylval.intval = st_get(yytext);
-	if (yylval.intval == -1) {
-		yylval.intval = st_insert(yytext, TK_NAME);
-	}
-
-	UPDATE_COL();
-
-	return TK_NAME;
-}
-
 "+" { UPDATE_COL(); return TK_PLUS; }
 "-" { UPDATE_COL(); return TK_MINUS; }
 "*" { UPDATE_COL(); return TK_MUL; }
@@ -98,12 +84,23 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "%" { UPDATE_COL(); return TK_MOD; }
 
 "\n" { currow++; curcol = 1; return TK_NEWLINE; }
-
 [ \t]+ { UPDATE_COL(); }
 
 \"(\\.|[^"\\])*\" { UPDATE_COL(); return TK_STRING; }
-
 "~~".*
+
+{NUMBER} {yylval.intval = atoi(yytext); UPDATE_COL(); return TK_NUMBER;}
+
+{NAME} {
+	yylval.intval = st_get(yytext);
+	if (yylval.intval == -1) {
+		yylval.intval = st_insert(yytext, TK_NAME);
+	}
+
+	UPDATE_COL();
+
+	return TK_NAME;
+}
 
 . { UPDATE_COL(); return TK_BADCHAR; }
 %%
