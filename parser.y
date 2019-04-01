@@ -276,21 +276,6 @@ exp:
 		$<nodeval>$ = ast_node_create(AST_FALSE, strdup("false"), 0);
 	}
 	| TK_STRING {
-		char *label;
-		int len;
-
-		/* Length of string, two quotation marks (") and NUL-terminator */
-		/* len = snprintf(NULL, 0, "%s", $<strval>1);
-		label = malloc(sizeof(*label) * (len + 1));
-		if (label == NULL) {
-			printf("Failed to allocate internal buffer\n");
-			exit(1);
-		}
-
-		snprintf(label, len + 1, "%s", $<strval>1); */
-
-		DPRINTF("foo: %s\n", $<strval>1);
-
 		$<nodeval>$ = ast_node_create(AST_STRING, $<strval>1, 0);
 	}
 	| prefixexp {
