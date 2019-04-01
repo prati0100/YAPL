@@ -61,6 +61,7 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "ulong" { UPDATE_COL(); return TK_ULONG; }
 "short" { UPDATE_COL(); return TK_SHORT; }
 "ushort" { UPDATE_COL(); return TK_USHORT; }
+"str" { UPDATE_COL(); return TK_STR; }
 
 
 {NUMBER} {yylval.intval = atoi(yytext); UPDATE_COL(); return TK_NUMBER;}
@@ -99,6 +100,8 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "\n" { currow++; curcol = 1; return TK_NEWLINE; }
 
 [ \t]+ { UPDATE_COL(); }
+
+\"(\\.|[^"\\])*\" { UPDATE_COL(); return TK_STRING; }
 
 "~~".*
 

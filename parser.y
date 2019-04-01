@@ -55,6 +55,7 @@
 %token TK_USHORT
 %token TK_LONG
 %token TK_ULONG
+%token TK_STR
 
 %token TK_PLUS
 %token TK_MINUS
@@ -192,6 +193,7 @@ type:
 	| TK_ULONG
 	| TK_SHORT
 	| TK_USHORT
+	| TK_STR
 	;
 
 var:
@@ -239,6 +241,7 @@ exp:
 	| TK_NULL
 	| TK_TRUE
 	| TK_FALSE
+	| TK_STRING
 	| prefixexp
 	| exp TK_PLUS exp
 	| exp TK_MINUS exp
