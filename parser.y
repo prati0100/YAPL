@@ -163,15 +163,6 @@ optassign:
 	| TK_ASSIGN exp
 	;
 
-assign:
-	var TK_ASSIGN exp {
-		$<nodeval>$ = ast_node_create(AST_OP, strdup("="), 2);
-
-		$<nodeval>$->children[0] = $<nodeval>1;
-		$<nodeval>$->children[1] = $<nodeval>3;
-	}
-	;
-
 conditional:
 	TK_IF exp TK_THEN block optelseifs optelse TK_END
 	;
