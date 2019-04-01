@@ -239,7 +239,7 @@ exp:
 	| TK_NULL
 	| TK_TRUE
 	| TK_FALSE
-	| var
+	| prefixexp
 	| exp TK_PLUS exp
 	| exp TK_MINUS exp
 	| exp TK_MUL exp
@@ -255,7 +255,6 @@ exp:
 	| exp TK_OR exp
 	| TK_MINUS exp
 	| TK_NOT exp
-	| functioncall
 	| assign
 	;
 %%
