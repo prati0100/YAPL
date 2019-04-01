@@ -86,7 +86,17 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 "\n" { currow++; curcol = 1; return TK_NEWLINE; }
 [ \t]+ { UPDATE_COL(); }
 
-\"(\\.|[^"\\])*\" { UPDATE_COL(); return TK_STRING; }
+\"(\\.|[^"\\])*\" {
+	UPDATE_COL();
+
+	/* Strip the quotes. */
+	char *temp = strdup(yytext);
+	temp[strlen(temp) - 1] = '\0';
+	yylval.strval = strdup(temp + 1);
+	free(temp);
+
+	return TK_STRING;
+}
 "~~".*
 
 {NUMBER} {yylval.intval = atoi(yytext); UPDATE_COL(); return TK_NUMBER;}
