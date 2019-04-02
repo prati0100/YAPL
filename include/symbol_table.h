@@ -22,6 +22,8 @@ struct st_entry {
 	int value;
 	bool is_fn;
 	struct paramlist *params;
+	/* Points to symbol table of function it belongs to, or -1 if none. */
+	int scope;
 };
 
 extern struct st_entry **symbol_table;
@@ -30,8 +32,8 @@ extern struct st_entry **symbol_table;
 extern int st_endidx, st_cursz;
 
 void st_init(void);
-int st_insert(char *text);
-int st_get(char *text);
+int st_insert(char *text, int scope);
+int st_get(char *text, int scope);
 void st_display(void);
 struct paramlist *paramlist_create(int);
 

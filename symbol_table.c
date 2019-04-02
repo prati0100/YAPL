@@ -17,7 +17,7 @@ int st_endidx = 0;
 int st_cursz = 0;
 
 struct st_entry *
-st_entry_create(char *text)
+st_entry_create(char *text, int scope)
 {
 	struct st_entry *s;
 
@@ -30,6 +30,8 @@ st_entry_create(char *text)
 	s->value = 0;
 	s->is_fn = false;
 	s->params = NULL;
+
+	s->scope = scope;
 
 	return s;
 }
@@ -64,7 +66,7 @@ st_init()
 }
 
 int
-st_insert(char *text)
+st_insert(char *text, int scope)
 {
 	if (st_endidx == st_cursz) {
 		if (st_grow()) {
@@ -73,18 +75,19 @@ st_insert(char *text)
 		}
 	}
 
-	symbol_table[st_endidx++] = st_entry_create(text);
+	symbol_table[st_endidx++] = st_entry_create(text, scope);
 
 	return st_endidx - 1;
 }
 
 int
-st_get(char *text)
+st_get(char *text, int scope)
 {
 	int i;
 
 	for (i = 0; i < st_endidx; i++) {
-		if (strcmp(text, symbol_table[i]->text) == 0) {
+		if (strcmp(text, symbol_table[i]->text) == 0 &&
+			symbol_table[i]->scope == scope) {
 			return i;
 		}
 	}

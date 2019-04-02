@@ -33,5 +33,6 @@ enum data_type {
 };
 
 extern bool gen_dot;
+extern int curfn;
 
 #endif /* __YAPL_H__ */

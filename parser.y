@@ -18,6 +18,7 @@
 	static struct ast_node *create_unop_node(struct ast_node *, int);
 
 	bool parse_err = 0;
+	int curfn = -1; /* Symbol table entry of current function. -1 if none */
 	extern int currow;
 
 	struct ast_node **block_stats;
@@ -113,7 +114,17 @@ input:
 	;
 
 funcdecl:
-	TK_FN type TK_NAME TK_COLON TK_LP parlist TK_RP funcbody {
+	TK_FN type TK_NAME {
+		if ($<intval>3 != st_endidx - 1) {
+			printf("Function name must be unique\n");
+			parse_err = true;
+		}
+
+		printf("Foo %d\n", $<intval>3);
+
+		curfn = $<intval>3;
+	}
+	TK_COLON TK_LP parlist TK_RP funcbody {
 		struct st_entry *stent;
 		int i;
 
@@ -129,6 +140,7 @@ funcdecl:
 
 		/* Reset for the next time around. */
 		params_idx = 0;
+		curfn = -1;
 	}
 	;
 

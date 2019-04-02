@@ -102,9 +102,9 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 {NUMBER} {yylval.intval = atoi(yytext); UPDATE_COL(); return TK_NUMBER;}
 
 {NAME} {
-	yylval.intval = st_get(yytext);
+	yylval.intval = st_get(yytext, curfn);
 	if (yylval.intval == -1) {
-		yylval.intval = st_insert(yytext);
+		yylval.intval = st_insert(yytext, curfn);
 	}
 
 	UPDATE_COL();
