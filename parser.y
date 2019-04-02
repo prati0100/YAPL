@@ -22,6 +22,8 @@
 
 	struct ast_node **block_stats;
 	int stat_idx;
+	struct paramlist *params = NULL;
+	int params_idx;
 %}
 
 %define parse.error verbose
@@ -31,6 +33,8 @@
 	int intval;
 	char *strval;
 	struct ast_node *nodeval;
+	struct param *paramval;
+	enum data_type typeval;
 }
 
 %token TK_EOF 0
@@ -109,7 +113,23 @@ input:
 	;
 
 funcdecl:
-	TK_FN type TK_NAME TK_COLON TK_LP parlist TK_RP funcbody
+	TK_FN type TK_NAME TK_COLON TK_LP parlist TK_RP funcbody {
+		struct st_entry *stent;
+		int i;
+
+		stent = symbol_table[$<intval>3];
+		stent->is_fn = true;
+
+		stent->params = paramlist_create(params_idx);
+
+		for (i = 0; i < params_idx; i++) {
+			stent->params->params[i] = params->params[i];
+			params->params[i] = NULL;
+		}
+
+		/* Reset for the next time around. */
+		params_idx = 0;
+	}
 	;
 
 funcbody:
@@ -117,12 +137,44 @@ funcbody:
 	;
 
 param:
-	type TK_NAME
+	type TK_NAME {
+		struct param *par;
+
+		par = malloc(sizeof(*par));
+		if (par == NULL) {
+			printf("Failed to allocate internal buffer\n");
+			exit(1);
+		}
+
+		par->type = $<typeval>1;
+		par->stent = $<intval>2;
+
+		$<paramval>$ = par;
+	}
 	;
 
 parlist:
-	  param
-	| parlist TK_COMMA param
+	  param {
+		if (params == NULL) {
+  			/* XXX Max 30 parameters supported. */
+  			params = paramlist_create(30);
+  			params_idx = 0;
+  		}
+
+		/*
+		 * Its a bit hacky. Since we need to collect a list of all parameters,
+		 * we use a global buffer of parameters. Fill in that buffer. The
+		 * grammar rule calling this rule can then use this global buffer. I
+		 * can't figure out a cleaner way of doing this.
+		 */
+  		params->params[params_idx] = $<paramval>1;
+		params_idx++;
+	  }
+	| parlist TK_COMMA param {
+		ASSERT(params != NULL, "Parameter list is NULL");
+		params->params[params_idx] = $<paramval>3;
+		params_idx++;
+	}
 	| %empty
 	;
 
@@ -239,15 +291,15 @@ scope:
 	;
 
 type:
-	  TK_INT
-	| TK_UINT
-	| TK_CHAR
-	| TK_UCHAR
-	| TK_LONG
-	| TK_ULONG
-	| TK_SHORT
-	| TK_USHORT
-	| TK_STR
+	  TK_INT { $<typeval>$ = INT; }
+	| TK_UINT { $<typeval>$ = UINT; }
+	| TK_CHAR { $<typeval>$ = CHAR; }
+	| TK_UCHAR { $<typeval>$ = UCHAR; }
+	| TK_LONG { $<typeval>$ = LONG; }
+	| TK_ULONG { $<typeval>$ = ULONG; }
+	| TK_SHORT { $<typeval>$ = SHORT; }
+	| TK_USHORT { $<typeval>$ = USHORT; }
+	| TK_STR { $<typeval>$ = STR; }
 	;
 
 var:

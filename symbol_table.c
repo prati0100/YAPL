@@ -105,3 +105,25 @@ st_display()
 			symbol_table[i]->type);
 	}
 }
+
+struct paramlist *
+paramlist_create(int num_params)
+{
+	struct paramlist *list;
+
+	list = malloc(sizeof(*list));
+	if (list == NULL) {
+		printf("Failed to create a parameter list\n");
+		return NULL;
+	}
+
+	list->num_params = num_params;
+	list->params = malloc(sizeof(*list->params) * num_params);
+	if (list->params == NULL) {
+		printf("Failed to allocate parameter list\n");
+		free(list);
+		return NULL;
+	}
+
+	return list;
+}

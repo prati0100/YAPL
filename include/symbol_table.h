@@ -5,10 +5,15 @@
 
 #include <yapl.h>
 
+struct param {
+	enum data_type type;
+	int stent;
+};
+
 /* The number of parameters for a function and its parameter types. */
 struct paramlist {
 	int num_params;
-	enum data_type *types;
+	struct param **params;
 };
 
 struct st_entry {
@@ -28,5 +33,6 @@ void st_init(void);
 int st_insert(char *text);
 int st_get(char *text);
 void st_display(void);
+struct paramlist *paramlist_create(int);
 
 #endif /* __SYMBOL_TABLE_H__ */

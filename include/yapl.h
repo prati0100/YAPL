@@ -28,7 +28,8 @@ enum data_type {
 	LONG,
 	ULONG,
 	SHORT,
-	USHORT
+	USHORT,
+	STR
 };
 
 extern bool gen_dot;
