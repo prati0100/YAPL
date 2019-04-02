@@ -95,10 +95,6 @@
 %token TK_NAME
 %token TK_STRING
 
-%token TK_LONGSTRING
-%token TK_SHORTCOMMENT;
-%token TK_LONGCOMMENT;
-%token TK_WHITESPACE;
 %token TK_NEWLINE;
 %token TK_BADCHAR;
 
