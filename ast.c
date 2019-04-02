@@ -52,6 +52,24 @@ ast_node_create(enum ast_type type, char *label, unsigned int num_children)
 }
 
 void
+ast_free(struct ast_node *root)
+{
+	int i;
+
+	if (root == NULL) {
+		return;
+	}
+
+	for (i = 0; i < root->num_children; i++) {
+		ast_free(root->children[i]);
+	}
+
+	free(root->label);
+	free(root->children);
+	free(root);
+}
+
+void
 ast_dot_traverse(struct ast_node *root)
 {
 	int i, len, myidx;

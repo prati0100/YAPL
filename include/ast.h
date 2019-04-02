@@ -21,5 +21,6 @@ struct ast_node {
 
 struct ast_node *ast_node_create(enum ast_type, char *, unsigned int);
 char *ast_output_dot(struct ast_node *);
+void ast_free(struct ast_node *);
 
 #endif /* __AST_H__ */
