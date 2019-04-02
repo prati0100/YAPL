@@ -201,6 +201,8 @@ block:
 		free(block_stats);
 		block_stats = NULL;
 		stat_idx = 0;
+
+		$<nodeval>$ = block;
 	}
 	;
 
