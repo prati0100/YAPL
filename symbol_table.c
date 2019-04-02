@@ -17,7 +17,7 @@ int st_endidx = 0;
 int st_cursz = 0;
 
 struct st_entry *
-st_entry_create(char *text, int tk_type)
+st_entry_create(char *text)
 {
 	struct st_entry *s;
 
@@ -27,7 +27,6 @@ st_entry_create(char *text, int tk_type)
 	}
 
 	s->text = strdup(text);
-	s->tk_type = tk_type;
 	s->value = 0;
 	s->is_fn = false;
 	s->params = NULL;
@@ -64,9 +63,8 @@ st_init()
 	}
 }
 
-/* TODO: TK_TYPE is useless. */
 int
-st_insert(char *text, int tk_type)
+st_insert(char *text)
 {
 	if (st_endidx == st_cursz) {
 		if (st_grow()) {
@@ -75,7 +73,7 @@ st_insert(char *text, int tk_type)
 		}
 	}
 
-	symbol_table[st_endidx++] = st_entry_create(text, tk_type);
+	symbol_table[st_endidx++] = st_entry_create(text);
 
 	return st_endidx - 1;
 }
@@ -104,6 +102,6 @@ st_display()
 	for (i = 0; i < st_endidx; i++) {
 		printf("%s\t%d\n",
 			symbol_table[i]->text,
-			symbol_table[i]->tk_type);
+			symbol_table[i]->type);
 	}
 }

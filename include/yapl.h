@@ -20,6 +20,17 @@
 #define DPRINTF(fmt, args...)
 #endif
 
+enum data_type {
+	INT,
+	UINT,
+	CHAR,
+	UCHAR,
+	LONG,
+	ULONG,
+	SHORT,
+	USHORT
+};
+
 extern bool gen_dot;
 
 #endif /* __YAPL_H__ */

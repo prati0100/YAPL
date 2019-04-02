@@ -13,7 +13,7 @@ struct paramlist {
 
 struct st_entry {
 	char *text;
-	int tk_type;
+	enum data_type type;
 	int value;
 	bool is_fn;
 	struct paramlist *params;
@@ -25,7 +25,7 @@ extern struct st_entry **symbol_table;
 extern int st_endidx, st_cursz;
 
 void st_init(void);
-int st_insert(char *text, int type);
+int st_insert(char *text);
 int st_get(char *text);
 void st_display(void);
 
