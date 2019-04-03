@@ -116,8 +116,6 @@ funcdecl:
 			parse_err = true;
 		}
 
-		printf("Foo %d\n", $<intval>3);
-
 		curfn = $<intval>3;
 	}
 	TK_COLON TK_LP parlist TK_RP funcbody {
