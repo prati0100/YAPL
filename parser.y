@@ -25,6 +25,10 @@
 	int stat_idx;
 	struct paramlist *params = NULL;
 	int params_idx;
+	/* XXX Max 30 names at a time supported. */
+	/* For collecting symbol table entries of all names in a declaration. */
+	int names[30];
+	int names_idx;
 %}
 
 %define parse.error verbose
@@ -157,6 +161,10 @@ param:
 		par->type = $<typeval>1;
 		par->stent = $<intval>2;
 
+		/* Mark the parameter declared, and set type in symbol table. */
+		symbol_table[$<intval>2]->is_declared = true;
+		symbol_table[$<intval>2]->type = $<typeval>1;
+
 		$<paramval>$ = par;
 	}
 	;
@@ -259,12 +267,41 @@ optnamelist:
 	;
 
 namelist:
-	  TK_NAME optassign
-	| namelist TK_COMMA TK_NAME optassign
+	  TK_NAME optassign {
+		names[names_idx++] = $<intval>1;
+	}
+	| namelist TK_COMMA TK_NAME optassign {
+		names[names_idx++] = $<intval>3;
+	}
 	;
 
 namedecl:
-	scope type namelist
+	scope type {
+		/*
+		 * Reset names_idx before parsing namelist because it might have been
+		 * modified by other rules calling namelist.
+		 */
+
+		names_idx = 0;
+	} namelist {
+		int i;
+
+		for (i = 0; i < names_idx; i++) {
+			if (symbol_table[names[i]]->is_declared) {
+				printf("Line %d: Variable %s already declared\n", currow,
+					symbol_table[names[i]]->text);
+				parse_err = true;
+			} else {
+				symbol_table[names[i]]->is_declared = true;
+				symbol_table[names[i]]->type = $<typeval>2;
+				if ($<scopeval>1 == GLOBAL) {
+					symbol_table[names[i]]->scope = -1;
+				}
+			}
+		}
+
+		names_idx = 0;
+	}
 	;
 
 optassign:
@@ -320,6 +357,11 @@ type:
 
 var:
 	  TK_NAME {
+		if (!symbol_table[$<intval>1]->is_declared) {
+			printf("Line %d: Variable %s used but not declared\n", currow,
+				symbol_table[$<intval>1]->text);
+			parse_err = true;
+		}
 		char *label = strdup(symbol_table[$<intval>1]->text);
 
 		$<nodeval>$ = ast_node_create(AST_NAME, label, 0);
