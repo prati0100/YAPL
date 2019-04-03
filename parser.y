@@ -21,8 +21,10 @@
 	int curfn = -1; /* Symbol table entry of current function. -1 if none */
 	extern int currow;
 
+	/* For collecting all the statements in a block. */
 	struct ast_node **block_stats;
 	int stat_idx;
+	/* For collecting information about all parameters of a function. */
 	struct paramlist *params = NULL;
 	int params_idx;
 	/* XXX Max 30 names at a time supported. */
