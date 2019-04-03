@@ -289,12 +289,24 @@ stat:
 		$<nodeval>$ = $<nodeval>1;
 	}
 	| error TK_NEWLINE
-	| namedecl TK_NEWLINE
-	| conditional TK_NEWLINE
-	| forloop TK_NEWLINE
-	| whileloop TK_NEWLINE
-	| TK_RETURN TK_LSB exp TK_RSB TK_NEWLINE
-	| TK_BREAK TK_NEWLINE
+	| namedecl TK_NEWLINE {
+		$<nodeval>$ = NULL;
+	}
+	| conditional TK_NEWLINE {
+		$<nodeval>$ = NULL;
+	}
+	| forloop TK_NEWLINE {
+		$<nodeval>$ = NULL;
+	}
+	| whileloop TK_NEWLINE {
+		$<nodeval>$ = NULL;
+	}
+	| TK_RETURN TK_LSB exp TK_RSB TK_NEWLINE {
+		$<nodeval>$ = NULL;
+	}
+	| TK_BREAK TK_NEWLINE {
+		$<nodeval>$ = NULL;
+	}
 	;
 
 optnamelist:
