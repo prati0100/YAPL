@@ -124,6 +124,7 @@ funcdecl:
 
 		stent = symbol_table[$<intval>3];
 		stent->is_fn = true;
+		stent->type = $<typeval>2;
 
 		stent->params = paramlist_create(params_idx);
 
