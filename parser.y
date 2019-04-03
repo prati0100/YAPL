@@ -36,6 +36,7 @@
 	struct ast_node *nodeval;
 	struct param *paramval;
 	enum data_type typeval;
+	enum scope scopeval;
 }
 
 %token TK_EOF 0
@@ -294,9 +295,15 @@ whileloop:
 	;
 
 scope:
-	  TK_LOCAL
-	| TK_GLOBAL
-	| TK_EXTERN
+	  TK_LOCAL {
+		$<scopeval>$ = LOCAL;
+	}
+	| TK_GLOBAL {
+		$<scopeval>$ = GLOBAL;
+	}
+	| TK_EXTERN {
+		$<scopeval>$ = EXTERN;
+	}
 	;
 
 type:

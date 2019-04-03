@@ -32,6 +32,12 @@ enum data_type {
 	STR
 };
 
+enum scope {
+	GLOBAL,
+	LOCAL,
+	EXTERN
+};
+
 extern bool gen_dot;
 extern int curfn;
 
