@@ -19,7 +19,6 @@ struct paramlist {
 struct st_entry {
 	char *text;
 	enum data_type type;
-	int value;
 	bool is_fn;
 	struct paramlist *params;
 	/* Points to symbol table of function it belongs to, or -1 if none. */

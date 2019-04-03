@@ -56,7 +56,6 @@ st_entry_create(char *text, int scope)
 	}
 
 	s->text = strdup(text);
-	s->value = 0;
 	s->is_fn = false;
 	s->params = NULL;
 
