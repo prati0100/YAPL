@@ -75,5 +75,5 @@ main(int argc, char *argv[]) {
 		st_display();
 	}
 
-	return 0;
+	return parse_err;
 }
