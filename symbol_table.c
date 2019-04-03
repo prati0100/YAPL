@@ -45,6 +45,34 @@ data_type_to_str(enum data_type type)
 	}
 }
 
+static
+int
+type_size(enum data_type type) {
+	switch (type) {
+	case INT:
+		return 4;
+	case UINT:
+		return 4;
+	case CHAR:
+		return 1;
+	case UCHAR:
+		return 1;
+	case LONG:
+		return 8;
+	case ULONG:
+		return 8;
+	case SHORT:
+		return 2;
+	case USHORT:
+		return 2;
+	case STR:
+		return 1;
+	default:
+		DPRINTF("Unknown data type\n");
+		return -1;
+	}
+}
+
 struct st_entry *
 st_entry_create(char *text, int scope)
 {
@@ -59,6 +87,8 @@ st_entry_create(char *text, int scope)
 	s->is_fn = false;
 	s->is_declared = false;
 	s->params = NULL;
+	s->is_arr = false;
+	s->arrsz = 0;
 
 	s->scope = scope;
 
@@ -130,7 +160,7 @@ st_display()
 	int i, j;
 	struct st_entry *stent;
 
-	printf("Name\tType\tIs fn\tNum params\tscope\n");
+	printf("Name\tType\tIs fn\tNum params\tscope\tIs arr\tSize\n");
 
 	for (i = 0; i < st_endidx; i++) {
 		stent = symbol_table[i];
@@ -154,6 +184,16 @@ st_display()
 			printf("\t%s", symbol_table[stent->scope]->text);
 		} else {
 			printf("\tglobal");
+		}
+
+		/* Is arr? */
+		printf("\t%s", stent->is_arr ? "true" : "false");
+
+		/* Size */
+		if (stent->is_arr) {
+			printf("\t%d", type_size(stent->type) * stent->arrsz);
+		} else {
+			printf("\t%d", type_size(stent->type));
 		}
 
 		printf("\n");

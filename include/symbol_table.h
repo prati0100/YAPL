@@ -24,6 +24,8 @@ struct st_entry {
 	/* Points to symbol table of function it belongs to, or -1 if none. */
 	int scope;
 	bool is_declared; /* Have we encountered this entry's declaration yet? */
+	bool is_arr;
+	int arrsz;
 };
 
 extern struct st_entry **symbol_table;

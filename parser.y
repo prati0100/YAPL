@@ -321,6 +321,26 @@ namelist:
 	| namelist TK_COMMA TK_NAME optassign {
 		names[names_idx++] = $<intval>3;
 	}
+	| TK_NAME TK_LSB TK_NUMBER TK_RSB {
+		int stent;
+
+		stent = $<intval>1;
+
+		symbol_table[stent]->is_arr = true;
+		symbol_table[stent]->arrsz = $<intval>3;
+
+		names[names_idx++] = stent;
+	}
+	| namelist TK_COMMA TK_NAME TK_LSB TK_NUMBER TK_RSB {
+		int stent;
+
+		stent = $<intval>3;
+
+		symbol_table[stent]->is_arr = true;
+		symbol_table[stent]->arrsz = $<intval>5;
+
+		names[names_idx++] = stent;
+	}
 	;
 
 namedecl:
