@@ -22,8 +22,11 @@
 	extern int currow;
 
 	/* For collecting all the statements in a block. */
-	struct ast_node **block_stats;
-	int stat_idx;
+	struct block_stats {
+		struct ast_node **stats;
+		int stat_idx;
+	};
+
 	/* For collecting information about all parameters of a function. */
 	struct paramlist *params = NULL;
 	int params_idx;
@@ -40,6 +43,7 @@
 	int intval;
 	char *strval;
 	struct ast_node *nodeval;
+	struct block_stats *bstatsval;
 	struct param *paramval;
 	enum data_type typeval;
 	enum scope scopeval;
@@ -199,12 +203,15 @@ parlist:
 block:
 	blockdash {
 		struct ast_node *block;
+		struct block_stats *bstats;
 		int i;
 
-		block = ast_node_create(AST_BLOCK, strdup("Block"), stat_idx);
+		bstats = $<bstatsval>1;
 
-		for (i = 0; i < stat_idx; i++) {
-			block->children[i] = block_stats[i];
+		block = ast_node_create(AST_BLOCK, strdup("Block"), bstats->stat_idx);
+
+		for (i = 0; i < bstats->stat_idx; i++) {
+			block->children[i] = bstats->stats[i];
 		}
 
 		/*
@@ -216,9 +223,7 @@ block:
 			free(str);
 		}
 
-		free(block_stats);
-		block_stats = NULL;
-		stat_idx = 0;
+		free(bstats);
 
 		$<nodeval>$ = block;
 	}
@@ -226,24 +231,53 @@ block:
 
 blockdash:
 	  stat {
-		if (block_stats == NULL) {
-			/* XXX Max 50 statements supported. */
-			block_stats = malloc(sizeof(*block_stats) * 50);
-			stat_idx = 0;
+		struct block_stats *bstats;
+
+		/* XXX Max 50 statements supported. */
+		/*
+		 * Create a list of nodes for statements. These will then be passed to
+		 * the other rule: blockdash: blockdash stat. That rule will add
+		 * statements's AST to this list. Then, the rule block: blockdash
+		 * can use this properly create an AST for this block.
+		 */
+		bstats = malloc(sizeof(*bstats));
+		if (bstats == NULL) {
+			printf("Failed to allocate internal buffer\n");
+			exit(1);
 		}
+
+		bstats->stats = malloc(sizeof(*bstats->stats) * 50);
+		if (bstats->stats == NULL) {
+			printf("Failed to allocate internal buffer\n");
+			exit(1);
+		}
+
+		bstats->stat_idx = 0;
 
 		if ($<nodeval>1 != NULL) {
-			block_stats[stat_idx] = $<nodeval>1;
-			stat_idx++;
+			bstats->stats[bstats->stat_idx] = $<nodeval>1;
+			bstats->stat_idx++;
 		}
+
+		$<bstatsval>$ = bstats;
 	  }
 	| blockdash stat {
-		ASSERT(block_stats != NULL, "block_stats is NULL");
+		struct block_stats *bstats;
 
+		bstats = $<bstatsval>1;
+		ASSERT(bstats != NULL, "block_stats is NULL");
+
+		/*
+		 * Add this statement's node to the list of nodes passed down by
+		 * blockstats. This list will then be used by block: blockdash to
+		 * properly create the AST for this block.
+		 */
 		if ($<nodeval>2 != NULL) {
-			block_stats[stat_idx] = $<nodeval>2;
-			stat_idx++;
+			bstats->stats[bstats->stat_idx] = $<nodeval>2;
+			bstats->stat_idx++;
 		}
+
+		$<bstatsval>$ = $<bstatsval>1;
 	}
 	;
 
