@@ -104,7 +104,12 @@ NAME [_A-Za-z][_A-Za-z0-9]*
 {NAME} {
 	yylval.intval = st_get(yytext, curfn);
 	if (yylval.intval == -1) {
-		yylval.intval = st_insert(yytext, curfn);
+		/* Check with global scope */
+		yylval.intval = st_get(yytext, -1);
+
+		if (yylval.intval == -1) {
+			yylval.intval = st_insert(yytext, curfn);
+		}
 	}
 
 	UPDATE_COL();
