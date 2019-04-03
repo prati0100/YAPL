@@ -7,6 +7,7 @@
 #include <stdbool.h>
 
 #include <yapl.h>
+#include <symbol_table.h>
 
 extern FILE *yyin;
 extern bool parse_err;
@@ -24,14 +25,19 @@ int
 main(int argc, char *argv[]) {
 	char *infilename;
 	int opt;
+	bool show_st;
 
 	infilename = NULL;
 	gen_dot = false;
+	show_st = false;
 
-	while ((opt = getopt(argc, argv, "t")) != -1) {
+	while ((opt = getopt(argc, argv, "ts")) != -1) {
 		switch (opt) {
 		case 't':
 			gen_dot = true;
+			break;
+		case 's':
+			show_st = true;
 			break;
 		default:
 			return 1;
@@ -63,6 +69,10 @@ main(int argc, char *argv[]) {
 		printf("Parsing failed\n");
 	} else {
 		printf("Parsed successfully\n");
+	}
+
+	if (show_st) {
+		st_display();
 	}
 
 	return 0;

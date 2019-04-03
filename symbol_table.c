@@ -16,6 +16,35 @@ struct st_entry **symbol_table = NULL;
 int st_endidx = 0;
 int st_cursz = 0;
 
+static
+char *
+data_type_to_str(enum data_type type)
+{
+	switch (type) {
+	case INT:
+		return "int";
+	case UINT:
+		return "uint";
+	case CHAR:
+		return "char";
+	case UCHAR:
+		return "uchar";
+	case LONG:
+		return "long";
+	case ULONG:
+		return "ulong";
+	case SHORT:
+		return "short";
+	case USHORT:
+		return "ushort";
+	case STR:
+		return "str";
+	default:
+		DPRINTF("Unknown data type\n");
+		return "unknown";
+	}
+}
+
 struct st_entry *
 st_entry_create(char *text, int scope)
 {
@@ -98,14 +127,63 @@ st_get(char *text, int scope)
 void
 st_display()
 {
-	int i;
+	int i, j;
+	struct st_entry *stent;
 
-	printf("Text\tType\n");
+	printf("Name\tType\tIs fn\tNum params\tscope\n");
 
 	for (i = 0; i < st_endidx; i++) {
-		printf("%s\t%d\n",
-			symbol_table[i]->text,
-			symbol_table[i]->type);
+		stent = symbol_table[i];
+		printf("%s\t%s\t%s",
+			stent->text,
+			data_type_to_str(stent->type),
+			stent->is_fn ? "true" : "false"
+		);
+
+		if (stent->is_fn) {
+			printf("\t\t%d", stent->params->num_params);
+		} else {
+			/* Not a function, so don't really have anything to print. */
+			printf("\t\t-");
+		}
+
+		/* Get the name of the function this entry belongs to. */
+		if (stent->is_fn) {
+			printf("\t-");
+		} else if (stent->scope != -1) {
+			printf("\t%s", symbol_table[stent->scope]->text);
+		} else {
+			printf("\tglobal");
+		}
+
+		printf("\n");
+	}
+
+	printf("\nFunction parameters:\n");
+
+	for (i = 0; i < st_endidx; i++) {
+		stent = symbol_table[i];
+
+		if (stent->is_fn) {
+			printf("%s: <", stent->text);
+
+			/*
+			 * Print the names and types of the parameters in format
+			 * <type:name, ...>
+			 */
+			for (j = 0; j < stent->params->num_params; j++) {
+				printf("%s:%s", data_type_to_str(stent->params->params[j]->type),
+					symbol_table[stent->params->params[j]->stent]->text);
+
+				/* Print comma for all but the last item. */
+				if (j != stent->params->num_params - 1) {
+					printf(", ");
+				}
+			}
+
+			/* Print the closing > */
+			printf(">\n");
+		}
 	}
 }
 
