@@ -159,6 +159,12 @@ param:
 	type TK_NAME {
 		struct param *par;
 
+		if (symbol_table[$<intval>2]->is_declared) {
+			printf("Line %d: Variable %s already declared\n", currow,
+				symbol_table[$<intval>2]->text);
+			parse_err = true;
+		}
+
 		par = malloc(sizeof(*par));
 		if (par == NULL) {
 			printf("Failed to allocate internal buffer\n");
