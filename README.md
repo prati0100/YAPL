@@ -23,7 +23,7 @@ To disable the debugging symbols:
 make release
 ```
 
-To run the compiler, call the executable with the input file as a command line argument. You can optionally specify the output file with the -o option.
+To run the compiler, call the executable with the input file as a command line argument.
 
 ## Compiler options
 
