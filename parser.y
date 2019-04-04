@@ -443,14 +443,22 @@ prefixexp:
 	  var {
 		$<nodeval>$ = $<nodeval>1;
 	}
-	| functioncall
+	| functioncall {
+		$<nodeval>$ = $<nodeval>1;
+	}
 	| TK_LP exp TK_RP {
 		$<nodeval>$ = NULL;
 	}
 	;
 
 functioncall:
-	TK_CALL TK_NAME TK_COLON args
+	TK_CALL TK_NAME TK_COLON args {
+		char *label;
+
+		label = strdup(symbol_table[$<intval>2]->text);
+
+		$<nodeval>$ = ast_node_create(AST_FN, label, 0);
+	}
 	;
 
 args:

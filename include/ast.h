@@ -9,7 +9,8 @@ enum ast_type {
 	AST_FALSE,
 	AST_STRING,
 	AST_OP,
-	AST_BLOCK
+	AST_BLOCK,
+	AST_FN
 };
 
 struct ast_node {
