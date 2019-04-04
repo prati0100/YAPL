@@ -4,6 +4,8 @@ Yet Another Programming Language (YAPL) is a language with syntax inspired from 
 
 The grammar is taken from the [Lua Manual](http://www.lua.org/manual/5.1/manual.html).
 
+## Building the compiler
+
 To compile the compiler:
 ```
 make
@@ -22,3 +24,10 @@ make release
 ```
 
 To run the compiler, call the executable with the input file as a command line argument. You can optionally specify the output file with the -o option.
+
+## Compiler options
+
+| Option | Action |
+|--|--|
+| -s | Print the symbol table. |
+| -t | Generate the AST for each block in dot format. The generated dot file is output to the standard output. It can be copied from there to graphviz or any other graph renderer. |
