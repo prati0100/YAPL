@@ -434,7 +434,9 @@ var:
 
 		$<nodeval>$ = ast_node_create(AST_NAME, label, 0);
 	}
-	| prefixexp TK_LSB exp TK_RSB
+	| prefixexp TK_LSB exp TK_RSB {
+		$<nodeval>$ = $<nodeval>1;
+	}
 	;
 
 prefixexp:
@@ -442,7 +444,9 @@ prefixexp:
 		$<nodeval>$ = $<nodeval>1;
 	}
 	| functioncall
-	| TK_LP exp TK_RP
+	| TK_LP exp TK_RP {
+		$<nodeval>$ = NULL;
+	}
 	;
 
 functioncall:
