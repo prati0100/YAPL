@@ -128,13 +128,14 @@ funcdecl:
 		}
 
 		curfn = $<intval>3;
+		/* Mark it as a function. Otherwise, recursive calls don't work. */
+		symbol_table[$<intval>3]->is_fn = true;
 	}
 	TK_COLON TK_LP parlist TK_RP funcbody {
 		struct st_entry *stent;
 		int i;
 
 		stent = symbol_table[$<intval>3];
-		stent->is_fn = true;
 		stent->type = $<typeval>2;
 
 		stent->params = paramlist_create(params_idx);
@@ -454,6 +455,12 @@ prefixexp:
 functioncall:
 	TK_CALL TK_NAME TK_COLON args {
 		char *label;
+
+		if (!symbol_table[$<intval>2]->is_fn) {
+			printf("Line %d: %s is not a function\n", currow,
+				symbol_table[$<intval>2]->text);
+			parse_err = true;
+		}
 
 		label = strdup(symbol_table[$<intval>2]->text);
 
